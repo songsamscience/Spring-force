@@ -1,496 +1,1150 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>용수철 탄성력 측정 실험 (훅의 법칙)</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Babel (JSX 변환용) -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <style>
-        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
-        /* 모바일에서 터치 지연 제거 */
-        button { touch-action: manipulation; }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="version" content="2.0">
+<meta name="description" content="스탠드에 매단 용수철에 100 g 추를 하나씩 걸어 자로 길이를 재고, 기록표와 그래프로 추의 무게와 늘어난 길이의 관계를 찾는 중학교 과학 가상실험실 (훅의 법칙 · 탄성력)">
+<meta property="og:title" content="송쌤과학 가상실험실 | 용수철 탄성력 실험">
+<meta property="og:description" content="추를 하나씩 걸 때마다 용수철은 얼마나 늘어날까요? 직접 재고 그래프로 확인해요">
+<meta property="og:type" content="website">
+<meta name="theme-color" id="metaTheme" content="#101b28">
+<title>송쌤과학 가상실험실 | 용수철 탄성력 실험</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23101b28'/%3E%3Cpath%20d='M32%206v8l-9%203%2018%205-18%205%2018%205-18%205%2018%205-9%203v4'%20fill='none'%20stroke='%23b0c0cf'%20stroke-width='3.5'%20stroke-linejoin='round'/%3E%3Crect%20x='23'%20y='49'%20width='18'%20height='11'%20rx='2'%20fill='%23d8b24a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script>(function(){try{var t=localStorage.getItem('ssv-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}})();</script>
+<style>
+/* ═══════ 송쌤과학 중1 가상실험실 공통 껍데기 (체험버전 V2.11) ═══════
+   ① 테마와 무관한 토큰 → ② 테마 토큰(두 블록, 같은 목록) → ③ 마감 기본층 → ④ 껍데기 부품
+   실험실마다 달라지는 장면 토큰·배치는 각 실험실 src/app.css에 둔다. */
+:root{
+  --font-ui:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --font-title:var(--font-ui);
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-8:32px;--sp-10:40px;
+  --r-1:6px;--r-2:10px;--r-3:16px;--r-full:999px;        /* 작은 컨트롤 6 · 버튼·입력 10 · 패널·장면 16 · 상태 알약 full */
+  --control-h:36px;--icon-size:18px;
+  --dur-fast:140ms;--dur-ui:260ms;--dur-ui-out:180ms;--dur-layout:360ms;
+  --ease-out:cubic-bezier(.2,0,0,1);--ease-in:cubic-bezier(.4,0,1,1);--lift:8px;
+  --top-h:56px;--strip-h:0px;
+  --light-angle:215deg;                                   /* 주 광원: 왼쪽 위 — UI 그림자는 오른쪽 아래로 */
+  --brand-pink:#FFB7B2;--brand-ink:#3b1d1b;
+  --yt-red:#ff0033;--yt-play:#ffffff;--ig-1:#feda75;--ig-2:#fa7e1e;--ig-3:#d62976;--ig-4:#4f5bd5;
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --surface-0:#0b131d;--surface-1:#101b28;--surface-2:#182636;
+  --stage:#0e1a27;--stage-2:#132233;
+  --text-1:#e8eff5;--text-2:#b0c0cf;--text-3:#8ea2b4;--line-1:#223445;--line-2:#34495d;
+  --accent:#6fd3c1;--accent-strong:#9be7d9;--accent-soft:#163a3b;--on-accent:#08131c;--focus:#9be7d9;--scrim:#02070dcc;
+  --danger:#ff9d8a;--danger-soft:#3b2322;--ok:#7ed7a0;--ok-soft:#1d3b32;--warn:#ffcf5c;--warn-soft:#3f3822;
+  --data-1:#E69F00;--data-2:#56B4E9;--data-3:#2fbf92;--data-4:#CC79A7;
+  --shadow-color:215 45% 3%;
+  --shadow-1:0 0 #0000;
+  --shadow-2:0 12px 32px -12px hsl(var(--shadow-color) / .6);
+  --shadow-3:0 24px 64px -16px hsl(var(--shadow-color) / .7);
+  --edge-hi:inset 0 1px 0 hsl(0 0% 100% / .06);
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --surface-0:#edf1f4;--surface-1:#fbfcfd;--surface-2:#e3eaf0;
+  --stage:#f5f8fa;--stage-2:#e9eff4;
+  --text-1:#132a3b;--text-2:#44596b;--text-3:#566b7e;--line-1:#d3dde5;--line-2:#b2c3d0;
+  --accent:#0f6b60;--accent-strong:#0a5148;--accent-soft:#d5eeea;--on-accent:#ffffff;--focus:#0a5148;--scrim:#0b1a2680;
+  --danger:#b3261e;--danger-soft:#fbe3df;--ok:#1d7a47;--ok-soft:#d8f0e2;--warn:#8a5a00;--warn-soft:#fff2c8;
+  --data-1:#B07400;--data-2:#0072B2;--data-3:#007A5A;--data-4:#A6508A;
+  --shadow-color:210 30% 22%;
+  --shadow-1:0 1px 2px hsl(var(--shadow-color) / .08);
+  --shadow-2:0 1px 2px hsl(var(--shadow-color) / .06),0 10px 28px -10px hsl(var(--shadow-color) / .22);
+  --shadow-3:0 2px 6px hsl(var(--shadow-color) / .08),0 24px 56px -16px hsl(var(--shadow-color) / .30);
+  --edge-hi:0 0 #0000;
+}
+/* ③ 마감 기본층 (§6.8) */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;accent-color:var(--accent)}
+body{margin:0;background:var(--surface-0);color:var(--text-1);font:400 15px/1.65 var(--font-ui);font-synthesis:none;word-break:keep-all;overflow-wrap:break-word}
+:root[data-theme="dark"] body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+h1,h2,h3,h4{text-wrap:balance;margin:0}
+p,li,figcaption{text-wrap:pretty}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{font-size:max(16px,1em)}
+button,a,[role="button"]{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+::selection{background:color-mix(in oklab,var(--accent) 30%,transparent)}
+input,textarea{caret-color:var(--accent)}
+*{scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.scroll{overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+.num{font-variant-numeric:tabular-nums}
+.unit{white-space:nowrap}
+img,canvas,video{display:block;max-width:100%}
+[hidden]{display:none!important}
+dialog:not([open]){display:none}
+[popover]:not(:popover-open){display:none}
+.sr-only{position:absolute;left:0;top:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:8px;top:-60px;z-index:90;padding:8px 12px;border-radius:var(--r-1);background:var(--accent);color:var(--on-accent);text-decoration:none;font-weight:600}
+.skip:focus{top:8px}
+kbd{font:600 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid var(--line-2);border-bottom-width:2px;border-radius:5px;padding:3px 5px;color:var(--text-1);background:var(--surface-0)}
+svg.ic{width:var(--icon-size);height:var(--icon-size);fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.muted{color:var(--text-2)}
+/* ⑤ 사용자 설정 존중 */
+@media (prefers-reduced-motion:reduce){:root{--lift:0px}}
+@media (prefers-contrast:more){:root[data-theme]{--line-1:var(--line-2);--text-3:var(--text-2)}}
+@media (prefers-reduced-transparency:reduce){.glass{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--surface-1)!important}}
+
+/* ═══ 몸체: 상단 막대 / 본문 / (휴대폰) 브랜드 띠 ═══ */
+html,body{height:100%}
+body{height:100dvh;display:grid;grid-template-rows:var(--top-h) minmax(0,1fr) var(--strip-h);overflow:hidden}
+.topbar{position:relative;z-index:30;display:flex;align-items:center;gap:12px;padding:0 10px 0 16px;background:var(--surface-1);border-bottom:1px solid var(--line-1);min-width:0}
+.brand{display:flex;align-items:center;gap:8px;white-space:nowrap;flex:none}
+.brandmark{width:27px;height:27px;border-radius:var(--r-2);background:var(--brand-pink);color:var(--brand-ink);display:grid;place-items:center;flex:none}
+.brandmark svg.ic{width:17px;height:17px;stroke-width:2}
+.word{font:700 13px/1 var(--font-ui);color:var(--text-1)}
+.vdiv{width:1px;height:15px;background:var(--line-2);flex:none}
+.social{position:relative;width:34px;height:34px;display:grid;place-items:center;border-radius:var(--r-1);color:var(--text-2);text-decoration:none;flex:none}
+.social::before{content:'';position:absolute;inset:-5px}
+.social svg{width:21px;height:21px}
+.social .yt-body{fill:currentColor}.social .yt-play{fill:var(--surface-1)}
+.social .ig-line{fill:none;stroke:currentColor;stroke-width:2}.social .ig-dot{fill:currentColor}
+.social:is(:hover,:focus-visible) .yt-body{fill:var(--yt-red)}.social:is(:hover,:focus-visible) .yt-play{fill:var(--yt-play)}
+.social:is(:hover,:focus-visible) .ig-line{stroke:url(#ig-grad)}.social:is(:hover,:focus-visible) .ig-dot{fill:var(--ig-3)}
+.top-title{display:flex;align-items:baseline;gap:10px;min-width:0;flex:1 1 auto}
+.top-title h1{font:700 15px/1.2 var(--font-ui);color:var(--text-1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.top-title .std{font:500 12px/1 var(--font-ui);color:var(--text-2);white-space:nowrap}
+.utilities{margin-left:auto;display:flex;align-items:center;gap:2px;flex:none}
+.hsep{width:1px;height:20px;background:var(--line-1);margin:0 4px}
+.icon-btn{position:relative;width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:var(--r-2);background:transparent;color:var(--text-2);cursor:pointer;transition:background var(--dur-fast),color var(--dur-fast),transform var(--dur-fast)}
+.icon-btn::before{content:'';position:absolute;inset:-4px}
+.icon-btn svg.ic{width:20px;height:20px}
+.icon-btn:active{transform:scale(.94)}
+@media (hover:hover) and (pointer:fine){.icon-btn:hover,.social:hover{background:var(--surface-2);color:var(--text-1)}}
+main.app{position:relative;min-width:0;min-height:0;overflow:hidden;outline:none}
+
+/* ═══ 버튼 계층: Primary / Secondary / Ghost / Icon ═══ */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--control-h);padding:0 14px;border:1px solid var(--line-2);border-radius:var(--r-2);background:var(--surface-1);color:var(--text-1);font:600 13px/1.2 var(--font-ui);cursor:pointer;white-space:nowrap;transition:background var(--dur-fast),border-color var(--dur-fast),transform var(--dur-fast)}
+.btn::before{content:'';position:absolute;inset:-4px 0}
+.btn svg.ic{width:17px;height:17px}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--text-2)}
+.btn.small{min-height:32px;padding:0 10px;font-size:13px}
+.btn.wide{width:100%}
+.btn[aria-disabled="true"],.btn:disabled{opacity:.5;cursor:not-allowed}
+@media (hover:hover) and (pointer:fine){
+  .btn:not(.primary):not(:disabled):hover{background:var(--surface-2)}
+  .btn.primary:not(:disabled):hover{background:var(--accent-strong);border-color:var(--accent-strong)}
+  .btn.ghost:hover{color:var(--text-1)}
+}
+/* 칩 · 세그먼트 */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{position:relative;display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 11px;border:1px solid var(--line-2);border-radius:var(--r-full);background:transparent;color:var(--text-1);font:500 13px/1 var(--font-ui);cursor:pointer;white-space:nowrap}
+.chip::before{content:'';position:absolute;inset:-6px -2px}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--text-1);font-weight:700}
+.chip[aria-pressed="true"]::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);order:-1}
+.seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;padding:3px;border-radius:var(--r-2);background:var(--surface-2);border:1px solid var(--line-1)}
+.seg button{position:relative;min-height:30px;padding:0 12px;border:0;border-radius:7px;background:transparent;color:var(--text-2);font:600 13px/1.2 var(--font-ui);cursor:pointer;white-space:nowrap}
+.seg button::before{content:'';position:absolute;inset:-6px -1px}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--surface-1);color:var(--text-1);font-weight:800;box-shadow:var(--edge-hi),0 1px 2px hsl(var(--shadow-color) / .18)}
+@media (hover:hover) and (pointer:fine){.chip:hover{border-color:var(--text-2)}.seg button:not([aria-pressed="true"]):not([aria-selected="true"]):hover{color:var(--text-1)}}
+
+/* 결과 저장 — 장면 모서리의 카메라 (Ghost/Icon 계층) */
+.save-btn{position:relative;display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px 0 9px;border:1px solid var(--line-2);border-radius:var(--r-2);background:color-mix(in oklab,var(--surface-1) 88%,transparent);color:var(--text-1);font:600 13px/1 var(--font-ui);cursor:pointer;white-space:nowrap;box-shadow:var(--edge-hi)}
+.save-btn::before{content:'';position:absolute;inset:-5px}
+.save-btn svg.ic{width:18px;height:18px}
+.save-btn[aria-busy="true"]{opacity:.6;cursor:progress}
+@media (hover:hover) and (pointer:fine){.save-btn:hover{background:var(--surface-2)}}
+.shutter{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;animation:shutter .32s var(--ease-out);z-index:5;border-radius:inherit}
+@keyframes shutter{0%{opacity:.55}100%{opacity:0}}
+
+/* 판독값 — 라벨 · 큰 수 · 작은 단위 */
+.readout{display:flex;align-items:baseline;gap:4px;font-variant-numeric:tabular-nums}
+.readout .v{font:800 26px/1.05 var(--font-ui);letter-spacing:-.02em;color:var(--text-1)}
+.readout .u{font:600 13px/1 var(--font-ui);color:var(--text-2)}
+.lbl{font:600 12px/1.4 var(--font-ui);color:var(--text-2)}
+
+/* 슬라이더 (네이티브 range + accent-color, 트랙 4px 이상 · 터치 44px) */
+input[type="range"]{width:100%;height:44px;margin:0;background:transparent;cursor:pointer;touch-action:pan-y}
+
+/* ═══ 대화상자 · 드로어 · 토스트 ═══ */
+dialog{border:0;padding:0;color:var(--text-1);background:var(--surface-1)}
+dialog::backdrop{background:var(--scrim)}
+.modal{width:min(620px,calc(100vw - 32px));max-height:min(86dvh,760px);border-radius:var(--r-3);box-shadow:var(--edge-hi),var(--shadow-3)}
+.modal[open]{display:flex;flex-direction:column}
+.modal.narrow{width:min(420px,calc(100vw - 32px))}
+.drawer{margin:0 0 0 auto;height:100dvh;max-height:100dvh;width:clamp(360px,32vw,460px);border-left:1px solid var(--line-1);box-shadow:var(--shadow-3)}
+.drawer[open]{display:flex;flex-direction:column}
+.drawer::backdrop{background:color-mix(in oklab,var(--scrim) 55%,transparent)}
+.dialog-head{display:flex;align-items:center;gap:8px;padding:12px 10px 12px 20px;border-bottom:1px solid var(--line-1);flex:none}
+.dialog-head h2{font:800 18px/1.3 var(--font-ui);margin-right:auto}
+.dialog-body{padding:16px 20px 22px;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+.dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+:is(dialog,[popover]).sheet{opacity:0;transform:translateY(var(--lift));transition:opacity var(--dur-ui-out) var(--ease-in),transform var(--dur-ui-out) var(--ease-in),overlay var(--dur-ui-out) allow-discrete,display var(--dur-ui-out) allow-discrete}
+:is(dialog[open],[popover]:popover-open).sheet{opacity:1;transform:none;transition-duration:var(--dur-ui);transition-timing-function:var(--ease-out)}
+@starting-style{:is(dialog[open],[popover]:popover-open).sheet{opacity:0;transform:translateY(var(--lift))}}
+.drawer.sheet{transform:translateX(24px)}
+.drawer.sheet[open]{transform:none}
+@starting-style{.drawer.sheet[open]{transform:translateX(24px)}}
+@media (prefers-reduced-motion:reduce){.drawer.sheet,.drawer.sheet[open]{transform:none}}
+.help-doc h3{font:700 15px/1.4 var(--font-ui);margin:18px 0 6px;color:var(--text-1)}
+.help-doc h3:first-child{margin-top:0}
+.help-doc p,.help-doc li{font-size:15px;line-height:1.7;color:var(--text-1)}
+.help-doc ul,.help-doc ol{margin:0;padding-left:20px}
+.help-doc li+li{margin-top:4px}
+.help-doc .keys{line-height:2.2}
+.brandblock{margin-top:16px;padding:12px 14px;border-radius:var(--r-2);background:var(--surface-2);font-size:13px;line-height:1.8;color:var(--text-1)}
+.brandblock a{color:var(--text-1)}
+.ver-line{margin-top:10px;font:500 12px/1 var(--font-ui);color:var(--text-2)}
+/* 원리 카드 */
+.tcard{padding:0 0 18px;border-bottom:1px solid var(--line-1);margin-bottom:18px}
+.tcard:last-child{border-bottom:0;margin-bottom:0}
+.tcard h3{font:800 18px/1.35 var(--font-ui);margin:0 0 8px}
+.tcard figure{margin:0 0 10px;border-radius:var(--r-2);background:var(--stage);border:1px solid var(--line-1);overflow:hidden}
+.tcard figure svg{display:block;width:100%;height:auto}
+.tcard .def{font:700 15px/1.6 var(--font-ui);margin-bottom:6px}
+.tcard p{font-size:15px;line-height:1.7;color:var(--text-1)}
+.tcard p+p{margin-top:6px}
+.tcard .link{margin-top:10px;padding:10px 12px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 var(--r-1) var(--r-1) 0;font-size:15px;line-height:1.65}
+.toast{position:fixed;left:50%;bottom:calc(20px + var(--strip-h) + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;max-width:min(360px,calc(100vw - 24px));padding:10px 14px;border-radius:var(--r-2);background:var(--surface-1);border:1px solid var(--line-2);box-shadow:var(--edge-hi),var(--shadow-2);font:500 13px/1.5 var(--font-ui);color:var(--text-1)}
+.toast.error{border-color:var(--danger)}
+.toast .toast-x{flex:none;width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:var(--r-1);background:transparent;color:var(--text-2);cursor:pointer}
+.textlink{display:inline-flex;align-items:center;gap:6px;color:var(--text-1);font:600 13px/1 var(--font-ui);text-decoration:underline;text-underline-offset:3px;padding:10px 0}
+.textlink .yt-ic{width:20px;height:20px;stroke:none}
+.textlink .yt-ic .yt-body{fill:var(--yt-red)}.textlink .yt-ic .yt-play{fill:#fff}
+
+/* ═══ 휴대폰 세로(≤600px): 브랜드·채널은 아래 브랜드 띠로, 위에는 제목 + 고정 세트 ═══ */
+@media (max-width:600px){
+  :root{--top-h:52px;--strip-h:40px}
+  .topbar{padding:0 4px 0 12px;gap:6px}
+  .topbar>.vdiv{display:none}
+  .top-title .std{display:none}
+  .top-title h1{font-size:15px}
+  .brand{position:fixed;left:0;right:0;bottom:0;z-index:30;height:calc(var(--strip-h) + env(safe-area-inset-bottom));padding:0 12px env(safe-area-inset-bottom);background:var(--surface-1);border-top:1px solid var(--line-1);justify-content:flex-start}
+  .brand .social{width:44px;height:36px}
+  .brand .social svg{width:18px;height:18px}
+  .utilities .hsep{margin:0 2px}
+  .icon-btn{width:40px;height:40px}
+  .drawer{width:100vw;height:86dvh;margin:auto 0 0;border-left:0;border-top:1px solid var(--line-1);border-radius:var(--r-3) var(--r-3) 0 0}
+  .drawer.sheet{transform:translateY(24px)}
+  @starting-style{.drawer.sheet[open]{transform:translateY(24px)}}
+}
+@media (max-width:360px){.icon-btn{width:38px}.utilities{gap:0}}
+
+/* ═══════ 이 실험실 ═══════ */
+/* 용수철 탄성력 실험 — 세로로 긴 실험대(왼쪽) + 넓은 측정·기록 칸(오른쪽: 계기 → 기록표 | 그래프) */
+:root[data-theme="dark"]{
+  --force:#ff7b5c;--force-2:#6ec7ff;--read:#ff5d73;
+  --bench:#1d2632;--bench-edge:#2f3b4c;
+  --rod-hi:#9aa5b1;--rod-lo:#3b4450;--base-hi:#3a4452;--base-lo:#1f252e;--boss:#56606b;--boss-hi:#8d98a5;
+  --spring-front:#d5dde6;--spring-back:#6f7c8a;
+  --brass-hi:#f3dc8a;--brass:#c9a227;--brass-lo:#7a5c10;--hookc:#b8c2cc;
+  --ruler:#e9e1c8;--ruler-edge:#9c9272;--ruler-ink:#1b1a14;
+  --tray:#2a3542;--tray-edge:#435266;--loupe-ring:#b0c0cf;--loupe-bg:#0e1a27;
+  --data-a:#E69F00;--data-b:#56B4E9;
+}
+:root[data-theme="light"]{
+  --force:#cf3a1c;--force-2:#0067a6;--read:#c8243a;
+  --bench:#dde4ea;--bench-edge:#b2c3d0;
+  --rod-hi:#f4f7fa;--rod-lo:#5f6a76;--base-hi:#6f7a87;--base-lo:#3b4450;--boss:#5f6a76;--boss-hi:#9aa5b1;
+  --spring-front:#5a6572;--spring-back:#a9b4bf;
+  --brass-hi:#f6e3a0;--brass:#c49a1e;--brass-lo:#80600e;--hookc:#6f7a87;
+  --ruler:#fffbe9;--ruler-edge:#b9ae94;--ruler-ink:#23262d;
+  --tray:#c7d1da;--tray-edge:#8a9aab;--loupe-ring:#44596b;--loupe-bg:#f5f8fa;
+  --data-a:#B07400;--data-b:#0072B2;
+}
+.lab{height:100%;display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr)}
+.stage-wrap{position:relative;min-height:0;background:var(--stage);border-right:1px solid var(--line-1)}
+.stage{position:absolute;inset:0}
+#scene{position:absolute;inset:0;width:100%;height:100%;user-select:none;-webkit-user-select:none;touch-action:none}
+.stage-tools{position:absolute;top:12px;left:12px;z-index:3}
+
+/* 장면 */
+.bench{fill:var(--bench)}.bench-edge{fill:var(--bench-edge)}
+.rod-lo-s{stop-color:var(--rod-lo)}.rod-hi-s{stop-color:var(--rod-hi)}
+.base-hi-s{stop-color:var(--base-hi)}.base-lo-s{stop-color:var(--base-lo)}
+.rod{fill:url(#rodGrad)}
+.base{fill:url(#baseGrad)}
+.boss{fill:var(--boss);stroke:var(--rod-lo);stroke-width:.6}
+.boss-hi{fill:var(--boss-hi)}
+.arm{fill:url(#rodGrad)}
+.knob{fill:var(--boss-hi);stroke:var(--rod-lo);stroke-width:.5}
+.sp-back{fill:none;stroke:var(--spring-back);stroke-linecap:round}
+.sp-front{fill:none;stroke:var(--spring-front);stroke-linecap:round}
+.hook{fill:none;stroke:var(--hookc);stroke-width:1.4;stroke-linecap:round}
+.brass-hi-s{stop-color:var(--brass-hi)}.brass-s{stop-color:var(--brass)}.brass-lo-s{stop-color:var(--brass-lo)}
+.w-body{fill:url(#brassGrad);stroke:var(--brass-lo);stroke-width:.5}
+.w-top{fill:var(--brass-hi);opacity:.55}
+.w-lbl{fill:var(--brass-lo);font-size:var(--t12);font-weight:800;text-anchor:middle;dominant-baseline:central}
+:root[data-theme="dark"] .w-lbl{fill:#3b2a05}
+.w-hit{fill:transparent;cursor:pointer}
+.w-tray-hit{fill:transparent;cursor:grab}
+.tray{fill:var(--tray);stroke:var(--tray-edge);stroke-width:.8}
+.tray-t{fill:var(--text-2);font-size:var(--t12);font-weight:600;text-anchor:middle}
+.ruler{fill:var(--ruler);stroke:var(--ruler-edge);stroke-width:.6}
+.r-tick{stroke:var(--ruler-ink);stroke-width:.35}
+.r-tick.mid{stroke-width:.45}.r-tick.maj{stroke-width:.6}
+.r-num{fill:var(--ruler-ink);font-size:6px;font-weight:600;text-anchor:end;dominant-baseline:central;font-variant-numeric:tabular-nums}
+.r-unit{fill:var(--ruler-ink);font-size:5px;font-weight:600;text-anchor:middle}
+.pointer{stroke:var(--read);stroke-width:1;stroke-linecap:round}
+.pointer-tip{fill:var(--read)}
+.lens-bg{fill:var(--loupe-bg)}
+.lens-ring{fill:none;stroke:var(--loupe-ring);stroke-width:1.6}
+.lens-handle{stroke:var(--loupe-ring);stroke-width:4;stroke-linecap:round}
+.lens-t{fill:var(--text-1);font-size:var(--t13);font-weight:800;text-anchor:middle;font-variant-numeric:tabular-nums;paint-order:stroke;stroke:var(--stage);stroke-width:var(--h3,3px);stroke-linejoin:round}
+.lens-cap{fill:var(--text-2);font-size:var(--t12);font-weight:600;text-anchor:middle}
+.fa-body{stroke-width:2.6;fill:none}
+.fa-up .fa-body{stroke:var(--force-2)}.fa-up .fa-head{fill:var(--force-2)}.fa-up .fa-t{fill:var(--force-2)}
+.fa-dn .fa-body{stroke:var(--force)}.fa-dn .fa-head{fill:var(--force)}.fa-dn .fa-t{fill:var(--force)}
+.fa-dot{stroke:var(--stage);stroke-width:1}
+.fa-t{font-size:var(--t12);font-weight:800;paint-order:stroke;stroke:var(--stage);stroke-width:var(--h3,3px);stroke-linejoin:round;font-variant-numeric:tabular-nums}
+.cap-s{fill:var(--text-2);font-size:var(--t12);font-weight:500}
+.small .cap-s,.small .lens-cap{display:none}
+.drop-zone{fill:none;stroke:var(--accent);stroke-width:1;stroke-dasharray:3 2}
+
+/* 측정·기록 칸 */
+.panel{display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--surface-1)}
+.ctl{display:grid;grid-template-columns:auto auto minmax(0,1fr);grid-template-areas:"spring w rec" "meter meter meter";gap:12px 24px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line-1)}
+.ctl-row{display:flex;align-items:center;gap:10px}
+.ctl-row:first-child{grid-area:spring}
+.ctl-row:nth-child(2){grid-area:w}
+.lbl-note{font-weight:500;margin-left:4px}
+.stepper{display:flex;align-items:center;gap:6px}
+.icon-btn.sm{width:36px;height:36px;border:1px solid var(--line-2);background:var(--surface-1)}
+.wcount{min-width:44px;text-align:center;font:800 18px/1 var(--font-ui);color:var(--text-1)}
+.meter{grid-area:meter;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.meter .m{display:flex;flex-direction:column;gap:2px;padding:4px 16px 4px 0}
+.meter .m+.m{padding-left:16px;border-left:1px solid var(--line-1)}
+.meter .readout .v{font-size:30px}
+.rec-row{grid-area:rec;display:flex;align-items:center;justify-content:flex-end;gap:12px}
+.rec-row .grow{min-width:160px;min-height:44px;font-size:15px}
+.rec-hint{font:500 13px/1.4 var(--font-ui);color:var(--text-2);max-width:220px;text-align:right}
+.data{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}
+.tbl-wrap,.graph-wrap{min-height:0;display:flex;flex-direction:column;padding:12px 18px 14px}
+.graph-wrap{border-left:1px solid var(--line-1)}
+.sub-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;min-height:34px}
+.cap{font:700 15px/1.3 var(--font-ui);color:var(--text-1)}
+.seg.small button{min-height:28px;font-size:12px;padding:0 10px}
+.tbl-scroll{flex:1;min-height:0}
+table.rec{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+table.rec th{position:sticky;top:0;background:var(--surface-1);font:600 12px/1.3 var(--font-ui);color:var(--text-2);text-align:right;padding:6px 8px;border-bottom:1px solid var(--line-2)}
+table.rec th:first-child,table.rec td:first-child{text-align:left}
+table.rec td{font:500 15px/1.3 var(--font-ui);color:var(--text-1);text-align:right;padding:7px 8px;border-bottom:1px solid var(--line-1)}
+table.rec td.ext{font-weight:800}
+table.rec tr.fresh td{animation:fresh .9s var(--ease-out)}
+@keyframes fresh{0%{background:var(--accent-soft)}100%{background:transparent}}
+.mk{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:1px}
+.mk.A{border-radius:50%;background:var(--data-a)}.mk.B{background:var(--data-b)}
+.empty-row td{color:var(--text-2)!important;font-size:13px!important;text-align:left!important}
+#graph{width:100%;flex:1;min-height:0}
+.g-grid{stroke:var(--line-1);stroke-width:1}
+.g-axis{stroke:var(--line-2);stroke-width:1.2}
+.g-t{fill:var(--text-2);font:500 12px var(--font-ui);font-variant-numeric:tabular-nums}
+.g-title{fill:var(--text-1);font:600 12px var(--font-ui)}
+.g-a{fill:var(--data-a);stroke:var(--surface-1);stroke-width:1.5}
+.g-b{fill:var(--data-b);stroke:var(--surface-1);stroke-width:1.5}
+.g-la{stroke:var(--data-a);stroke-width:1.6;stroke-dasharray:6 4;fill:none}
+.g-lb{stroke:var(--data-b);stroke-width:1.6;stroke-dasharray:2 3;fill:none}
+.g-now{fill:none;stroke:var(--text-1);stroke-width:1.4;stroke-dasharray:2 2}
+.g-lab{font:700 12px var(--font-ui)}
+.find{font:500 15px/1.55 var(--font-ui);color:var(--text-1);min-height:24px;margin-top:4px}
+
+@media (max-width:1180px){
+  .ctl{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"spring spring" "w rec" "meter meter"}
+}
+@media (max-width:860px){
+  main.app{overflow:auto}
+  .lab{height:auto;grid-template-columns:44% minmax(0,1fr);grid-template-rows:auto auto}
+  .stage-wrap{position:relative;min-height:calc(44vw * 492 / 262);border-bottom:1px solid var(--line-1)}
+  .panel{display:contents}
+  .ctl{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line-1)}
+  .ctl-row{flex-direction:column;align-items:flex-start;gap:6px}
+  .ctl-row .seg{width:100%;grid-auto-flow:row;grid-auto-columns:auto}
+  .lbl-note{display:block;margin:0}
+  .meter{grid-template-columns:minmax(0,1fr);gap:4px}
+  .meter .m{padding:2px 0}
+  .meter .m+.m{padding-left:0;border-left:0;border-top:1px solid var(--line-1);padding-top:4px}
+  .meter .readout .v{font-size:24px}
+  .rec-row{flex-direction:column;align-items:stretch;gap:6px}
+  .rec-row .grow{min-width:0}
+  .rec-hint{text-align:left;max-width:none;font-size:12px}
+  .data{grid-column:1 / -1;grid-row:2;grid-template-columns:minmax(0,1fr);background:var(--surface-1)}
+  .graph-wrap{border-left:0;border-top:1px solid var(--line-1)}
+  #graph{flex:none;height:auto}
+  .tbl-scroll{max-height:none}
+  .stage-tools{top:6px;left:6px}
+  .save-btn{width:44px;height:44px;padding:0;justify-content:center}
+  .save-btn .save-l{display:none}
+}
+
+</style>
 </head>
-<body class="bg-slate-50">
-    <div id="root"></div>
+<body data-lab="spring-force">
+<a class="skip" href="#main">실험 화면으로 건너뛰기</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="ig-grad" x1="0" y1="1" x2="1" y2="0"><stop offset="0" style="stop-color:var(--ig-1)"/><stop offset=".35" style="stop-color:var(--ig-2)"/><stop offset=".65" style="stop-color:var(--ig-3)"/><stop offset="1" style="stop-color:var(--ig-4)"/></linearGradient></defs></svg>
+<header class="topbar">
+  <div class="brand">
+    <span class="brandmark" id="brandIc" aria-hidden="true"></span>
+    <span class="word">송쌤과학</span>
+    <span class="vdiv" aria-hidden="true"></span>
+    <a class="social" id="yt" href="https://www.youtube.com/@songsamscience" target="_blank" rel="noopener noreferrer" aria-label="송쌤과학 유튜브 채널 (새 창)" title="YouTube @songsamscience (새 창)"></a>
+    <a class="social" id="ig" href="https://www.instagram.com/songsamscience/" target="_blank" rel="noopener noreferrer" aria-label="송쌤과학 인스타그램 (새 창)" title="Instagram @songsamscience (새 창)"></a>
+  </div>
+  <span class="vdiv" aria-hidden="true"></span>
+  <div class="top-title"><h1>용수철 탄성력 실험</h1><span class="std">중1 · 힘의 작용</span></div>
+  <div class="utilities">
+    <button class="icon-btn" id="bookBtn" aria-label="원리 카드 열기" title="원리 카드"></button>
+    <button class="icon-btn" id="helpBtn" aria-label="도움말 (H)" title="도움말 (H)"></button>
+    <span class="hsep" aria-hidden="true"></span>
+    <button class="icon-btn" id="fullBtn" aria-label="전체화면 (F)" title="전체화면 (F)"></button>
+    <button class="icon-btn" id="themeBtn" aria-label="라이트 모드로 전환 (D)" title="라이트 모드로 전환 (D)"></button>
+  </div>
+</header>
+<main class="app" id="main" tabindex="-1">
+<div class="lab" id="lab">
+  <section class="stage-wrap" aria-labelledby="stageCap">
+    <h2 class="sr-only" id="stageCap">실험 장면 — 스탠드에 매단 용수철, 자, 추</h2>
+    <div class="stage" id="stage">
+      <svg id="scene" viewBox="0 20 262 492" role="group" aria-label="스탠드에 매단 용수철과 자. 오른쪽 아래 상자의 추를 누르면 용수철에 걸려요.">
+        <defs>
+          <linearGradient id="rodGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" class="rod-lo-s"/><stop offset=".45" class="rod-hi-s"/><stop offset="1" class="rod-lo-s"/></linearGradient>
+          <linearGradient id="brassGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" class="brass-lo-s"/><stop offset=".35" class="brass-hi-s"/><stop offset=".7" class="brass-s"/><stop offset="1" class="brass-lo-s"/></linearGradient>
+          <linearGradient id="baseGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="base-hi-s"/><stop offset="1" class="base-lo-s"/></linearGradient>
+          <clipPath id="loupeClip"><circle id="loupeC" cx="222" cy="120" r="34"/></clipPath>
+        </defs>
+        <g id="gBench"></g>
+        <g id="gStand"></g>
+        <g id="gRuler"></g>
+        <g id="gSpring"></g>
+        <g id="gHang"></g>
+        <g id="gPointer"></g>
+        <g id="gTray"></g>
+        <g id="gForces"></g>
+        <g id="gLoupe"></g>
+        <g id="gDrag"></g>
+      </svg>
+    </div>
+    <div class="stage-tools"><button class="save-btn" id="saveBtn" aria-label="실험 결과를 PNG 이미지로 저장 (C)" title="실험 결과를 PNG 이미지로 저장 (C)"></button></div>
+  </section>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+  <section class="panel" aria-label="측정과 기록">
+    <div class="ctl">
+      <div class="ctl-row">
+        <span class="lbl" id="lSpring">용수철</span>
+        <div class="seg" id="springSeg" role="group" aria-labelledby="lSpring">
+          <button data-s="A" aria-pressed="true">A 가는 용수철</button>
+          <button data-s="B" aria-pressed="false">B 굵은 용수철</button>
+        </div>
+      </div>
+      <div class="ctl-row">
+        <span class="lbl" id="lW">추 <span class="lbl-note">한 개 100 g · 무게 0.98 N</span></span>
+        <div class="stepper" role="group" aria-labelledby="lW">
+          <button class="icon-btn sm" id="wMinus" aria-label="추 하나 내리기 (−)" title="추 하나 내리기 (−)"></button>
+          <output class="wcount num" id="wCount" aria-live="polite">0개</output>
+          <button class="icon-btn sm" id="wPlus" aria-label="추 하나 걸기 (+)" title="추 하나 걸기 (+)"></button>
+        </div>
+      </div>
+      <div class="meter" aria-live="polite">
+        <div class="m"><span class="lbl">용수철 길이(자 눈금)</span><span class="readout"><span class="v num" id="mLen">10.0</span><span class="u">cm</span></span></div>
+        <div class="m"><span class="lbl">늘어난 길이</span><span class="readout"><span class="v num" id="mExt">0.0</span><span class="u">cm</span></span></div>
+        <div class="m"><span class="lbl">추의 무게</span><span class="readout"><span class="v num" id="mW">0</span><span class="u">N</span></span></div>
+      </div>
+      <div class="rec-row">
+        <button class="btn primary grow" id="recBtn"></button>
+        <p class="rec-hint" id="recHint"></p>
+      </div>
+    </div>
+    <div class="data">
+      <div class="tbl-wrap">
+        <div class="sub-head"><h3 class="cap">기록표</h3><button class="btn small ghost" id="undoBtn"></button></div>
+        <div class="tbl-scroll scroll">
+          <table class="rec" id="recTable">
+            <thead><tr><th scope="col">용수철</th><th scope="col">추</th><th scope="col">무게(N)</th><th scope="col">길이(cm)</th><th scope="col">늘어난 길이(cm)</th></tr></thead>
+            <tbody id="recBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="graph-wrap">
+        <div class="sub-head">
+          <h3 class="cap">그래프</h3>
+          <div class="seg small" id="ySeg" role="group" aria-label="세로축 고르기">
+            <button data-y="ext" aria-pressed="true">늘어난 길이</button>
+            <button data-y="len" aria-pressed="false">용수철 길이</button>
+          </div>
+        </div>
+        <svg id="graph" viewBox="0 0 360 250" role="img" aria-label="추의 무게와 용수철이 늘어난 길이의 그래프"></svg>
+        <p class="find note-slot" id="find"></p>
+      </div>
+    </div>
+  </section>
+</div>
 
-        // --- 아이콘 컴포넌트 ---
-        const PlusIcon = ({ size = 20 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        );
-        const MinusIcon = ({ size = 20 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        );
-        const RotateCcwIcon = ({ size = 20 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-        );
-        const InfoIcon = ({ size = 20, className }) => (
-            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-        );
-        const ArrowRightLeftIcon = ({ size = 20, className }) => (
-            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m16 3 4 4-4 4"></path><path d="M20 7H4"></path><path d="m8 21-4-4 4-4"></path><path d="M4 17h16"></path></svg>
-        );
-        const BarChartIcon = ({ size = 20 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
-        );
+</main>
+<div class="strip-space" aria-hidden="true"></div>
+<dialog id="modal" class="modal sheet" aria-labelledby="modalTitle">
+  <header class="dialog-head"><h2 id="modalTitle"></h2><button class="icon-btn" data-close aria-label="닫기 (Esc)" title="닫기 (Esc)"></button></header>
+  <div class="dialog-body" id="modalBody"></div>
+</dialog>
+<dialog id="drawer" class="drawer sheet" aria-labelledby="drawerTitle">
+  <header class="dialog-head"><h2 id="drawerTitle">원리 카드</h2><button class="btn small ghost" id="dHelp">도움말</button><button class="icon-btn" data-close aria-label="닫기 (Esc)" title="닫기 (Esc)"></button></header>
+  <div class="dialog-body" id="drawerBody"></div>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="sr-only" id="live" aria-live="polite"></div>
+<script>
+/* ═══════ 송쌤과학 중1 가상실험실 공통 껍데기 — 테마 · 전체화면 · 도움말 · 원리 카드 · 결과 저장 · 단축키 ═══════
+   각 실험실은 SS.init({...})을 한 번 부른다. 채널 주소는 이 파일의 CHANNELS 한 곳에서만 정의한다. */
+const SS = (() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const NS = 'http://www.w3.org/2000/svg';
+  const CHANNELS = { yt: 'https://www.youtube.com/@songsamscience', ig: 'https://www.instagram.com/songsamscience/' };
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ICONS = {
+    flask: '<path d="M9 3h6m-5 0v6L4.5 19A2 2 0 0 0 6.3 22h11.4a2 2 0 0 0 1.8-3L14 9V3M7.5 15h9"/>',
+    book: '<path d="M12 6.6C10.4 5.1 7.9 4.5 3.5 4.5v14c4.4 0 6.9.6 8.5 2.1 1.6-1.5 4.1-2.1 8.5-2.1v-14c-4.4 0-6.9.6-8.5 2.1Z"/><path d="M12 6.6v14"/>',
+    help: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.3c-.7.4-1.2 1-1.2 1.8v.5"/><path d="M12 17.2h.01"/>',
+    fsIn: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+    fsOut: '<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',
+    moon: '<path d="M20 14.6A8.2 8.2 0 1 1 9.4 4a6.6 6.6 0 0 0 10.6 10.6Z"/>',
+    sun: '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/>',
+    camera: '<path d="M3.5 8.5h3.2l1.8-3h7l1.8 3h3.2v11h-17Z"/><circle cx="12" cy="13.5" r="3.6"/>',
+    x: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+    check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    chev: '<path d="m9.5 6 6 6-6 6"/>',
+    chevL: '<path d="m14.5 6-6 6 6 6"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    minus: '<path d="M5 12h14"/>',
+    trash: '<path d="M5 7h14M10 7V4.5h4V7M7 7l1 13h8l1-13"/>',
+    reset: '<path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3L4.5 9"/><path d="M4.5 4.5V9H9"/>',
+    undo: '<path d="M9 8H5V4"/><path d="M5.3 8A8 8 0 1 1 5 15"/>',
+    play: '<path d="M7.5 5.5v13l11-6.5Z"/>',
+    pause: '<path d="M8 5.5v13M16 5.5v13"/>',
+    pen: '<path d="M4.5 19.5h4l10-10-4-4-10 10Z"/><path d="m13 7 4 4"/>',
+    push: '<path d="M3.5 12h11"/><path d="m10.5 7 5 5-5 5"/><path d="M19.5 4.5v15"/>',
+    target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.6"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/>',
+    ghost: '<circle cx="14" cy="11" r="7"/><circle cx="9.5" cy="13.5" r="5.2" stroke-dasharray="2.4 2.2"/>',
+    record: '<path d="M5 4.5h10.5l3.5 3.5v11.5H5Z"/><path d="M8.5 11h7M8.5 14.5h7M8.5 7.5h4"/>',
+    compare: '<path d="M12 3.5v17"/><rect x="3.5" y="6.5" width="6" height="11" rx="1.5"/><rect x="14.5" y="6.5" width="6" height="11" rx="1.5"/>',
+    yt: '<path class="yt-body" d="M21.6 7.2a2.6 2.6 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.6 2.6 0 0 0-1.8 1.8A27 27 0 0 0 2 12a27 27 0 0 0 .4 4.8 2.6 2.6 0 0 0 1.8 1.8c1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4a2.6 2.6 0 0 0 1.8-1.8A27 27 0 0 0 22 12a27 27 0 0 0-.4-4.8Z"/><path class="yt-play" d="M10 15.3V8.7l5.6 3.3Z"/>',
+    ig: '<rect class="ig-line" x="3" y="3" width="18" height="18" rx="5.2"/><circle class="ig-line" cx="12" cy="12" r="4.1"/><circle class="ig-dot" cx="17.4" cy="6.6" r="1.2"/>',
+  };
+  const icon = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[name] || ''}</svg>`;
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-        // --- 메인 컴포넌트 ---
-        const HookesLawExperiment = () => {
-            const [weightCount, setWeightCount] = useState(0);
-            const [isAnimating, setIsAnimating] = useState(false);
-            const [unit, setUnit] = useState('g');
-            const [graphMode, setGraphMode] = useState('default');
+  let CFG = null;
+  const themeHooks = [];
 
-            const BASE_LENGTH = 10;
-            const EXTENSION_PER_WEIGHT = 2;
-            const MAX_WEIGHTS = 10;
-            const G_PER_WEIGHT = 100;
-            const N_PER_WEIGHT = 0.98;
+  /* ── 저장: 진행 상태는 sessionStorage, 테마·익명 최고 기록만 localStorage ── */
+  const KEY = n => `ssv-${CFG.id}-${n}`;
+  const store = {
+    get(n, d) { try { const v = sessionStorage.getItem(KEY(n)); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(n, v) { try { sessionStorage.setItem(KEY(n), JSON.stringify(v)); } catch (e) { } },
+    del(n) { try { sessionStorage.removeItem(KEY(n)); } catch (e) { } },
+    clear() { try { Object.keys(sessionStorage).filter(k => k.startsWith(`ssv-${CFG.id}-`)).forEach(k => sessionStorage.removeItem(k)); } catch (e) { } },
+  };
 
-            const currentLength = BASE_LENGTH + (weightCount * EXTENSION_PER_WEIGHT);
-            
-            const currentWeightValue = unit === 'g' 
-                ? weightCount * G_PER_WEIGHT 
-                : (weightCount * N_PER_WEIGHT).toFixed(2);
-            
-            const currentWeightLabel = unit === 'g' ? 'g' : 'N';
-            const singleWeightLabel = unit === 'g' ? '100g' : '0.98N';
+  /* ── 알림 ── */
+  function announce(m) { const l = $('#live'); if (!l) return; l.textContent = ''; requestAnimationFrame(() => { l.textContent = m; }); }
+  let toastT = 0, toastLast = '', toastN = 1;
+  function toast(msg, o = {}) {
+    const e = $('#toast');
+    if (msg === toastLast && !e.hidden) toastN++; else toastN = 1;
+    toastLast = msg;
+    e.innerHTML = `<span>${esc(msg)}${toastN > 1 ? ` <b class="num">×${toastN}</b>` : ''}</span>${o.error ? `<button class="toast-x" aria-label="알림 닫기">${icon('x')}</button>` : ''}`;
+    e.classList.toggle('error', !!o.error);
+    e.hidden = false;
+    const x = e.querySelector('.toast-x'); if (x) x.onclick = () => { e.hidden = true; };
+    clearTimeout(toastT);
+    toastT = setTimeout(() => { e.hidden = true; }, o.error ? 7000 : 2800);
+  }
 
-            const chartRef = useRef(null);
-            const chartInstance = useRef(null);
+  /* ── 테마 (§11 — 스위치는 html[data-theme] 하나) ── */
+  function applyTheme(t) {
+    document.documentElement.dataset.theme = t;
+    try { localStorage.setItem('ssv-theme', t); } catch (e) { }
+    const next = t === 'dark' ? '라이트' : '다크', b = $('#themeBtn');
+    b.setAttribute('aria-label', `${next} 모드로 전환 (D)`); b.setAttribute('title', `${next} 모드로 전환 (D)`);
+    b.innerHTML = icon(t === 'dark' ? 'moon' : 'sun');
+    const mt = $('#metaTheme'); if (mt) mt.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--surface-1').trim());
+    themeHooks.forEach(f => f(t));
+  }
+  const toggleTheme = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
 
-            const addWeight = () => {
-                if (weightCount < MAX_WEIGHTS) {
-                    setWeightCount(prev => prev + 1);
-                    triggerAnimation();
-                }
+  /* ── 전체화면 ── */
+  function toggleFull() {
+    const d = document;
+    if (d.fullscreenElement) { d.exitFullscreen && d.exitFullscreen(); return; }
+    const r = d.documentElement;
+    if (!r.requestFullscreen || d.fullscreenEnabled === false) { toast('이 브라우저에서는 전체화면을 지원하지 않습니다', { error: true }); return; }
+    r.requestFullscreen().catch(() => toast('전체화면으로 바꾸지 못했어요. 다시 눌러 보세요.', { error: true }));
+  }
+  function syncFull() {
+    const on = !!document.fullscreenElement, b = $('#fullBtn');
+    document.body.classList.toggle('fs', on);
+    b.innerHTML = icon(on ? 'fsOut' : 'fsIn');
+    const l = on ? '전체화면 나가기 (F · Esc)' : '전체화면 (F)';
+    b.setAttribute('aria-label', l); b.setAttribute('title', l);
+  }
+
+  /* ── 대화상자 (네이티브 <dialog>) ── */
+  let lastTrigger = null;
+  function openModal(title, html, o = {}) {
+    const d = $('#modal');
+    if (d.open) d.close();
+    lastTrigger = document.activeElement;
+    d.classList.toggle('narrow', !!o.narrow);
+    $('#modalTitle').textContent = title;
+    $('#modalBody').innerHTML = html;
+    d.showModal();
+    if (o.onOpen) o.onOpen(d);
+    $('#modalBody').scrollTop = 0;
+  }
+  function openDrawer() {
+    const d = $('#drawer');
+    lastTrigger = document.activeElement;
+    $('#drawerBody').innerHTML = CFG.theory();
+    d.showModal();
+    $('#drawerBody').scrollTop = 0;
+    if (CFG.onTheoryOpen) CFG.onTheoryOpen($('#drawerBody'));
+  }
+  function openHelp() {
+    const h = CFG.help;
+    openModal('도움말', `<div class="help-doc">
+      <h3>이렇게 해 보세요</h3>${h.how}
+      <h3>단축키</h3><p class="keys"><kbd>F</kbd> 전체화면 · <kbd>D</kbd> 다크/라이트 · <kbd>H</kbd> 도움말 · <kbd>C</kbd> 결과 저장 · <kbd>Esc</kbd> 창 닫기·전체화면 나가기${h.keys ? '<br>' + h.keys : ''}</p>
+      <h3>결과 저장</h3><p>장면 오른쪽 위 <b>결과 저장</b>(또는 <kbd>C</kbd>)을 누르면 지금 보이는 장면과 그 순간의 조건·값이 담긴 PNG 한 장이 기기의 다운로드 폴더에 저장돼요(iPad는 저장 확인 창이 떠요).</p>
+      <h3>모형의 조건과 한계</h3>${h.model}
+      <h3>출처와 제작</h3>${h.source}
+      <h3>기록 지우기</h3><p>실험 기록과 진행 상태는 이 탭에만 남고, 탭을 닫으면 지워져요.${h.local ? ' ' + h.local : ''}</p>
+      <button class="btn" id="wipeBtn">${icon('trash')}이 실험실의 기록 모두 지우기</button>
+      <div class="brandblock">🧪 송쌤과학 (Song Ssaem Science)<br>ⓒ 2026 송세호 | 아주중학교<br>📺 YouTube: <a href="${CHANNELS.yt}" target="_blank" rel="noopener noreferrer" aria-label="송쌤과학 유튜브 채널 (새 창)">@songsamscience</a>&nbsp; 📷 Instagram: <a href="${CHANNELS.ig}" target="_blank" rel="noopener noreferrer" aria-label="송쌤과학 인스타그램 (새 창)">@songsamscience</a><br>⚠ 무단 복제·상업적 이용 금지</div>
+      <p class="ver-line">v${CFG.version} · ${CFG.date}</p></div>`, {
+      onOpen: () => {
+        $('#wipeBtn').onclick = () => openModal('기록을 모두 지울까요?', `<p>${h.wipe || '이 실험실의 기록과 진행 상태'}가 모두 지워져요. 테마 설정은 남아요.</p>
+          <div class="dialog-actions"><button class="btn" data-close>그대로 두기</button><button class="btn primary" id="wipeYes">모두 지우기</button></div>`, {
+          narrow: true, onOpen: () => {
+            $('#wipeYes').onclick = () => {
+              store.clear();
+              if (CFG.onWipe) CFG.onWipe();
+              $('#modal').close(); toast('기록을 모두 지웠어요.');
             };
+          },
+        });
+      },
+    });
+  }
 
-            const removeWeight = () => {
-                if (weightCount > 0) {
-                    setWeightCount(prev => prev - 1);
-                    triggerAnimation();
-                }
-            };
+  /* ── 결과 저장 (§11): SVG 장면 복제 → 계산된 스타일 인라인 → 이미지 → 캔버스 + 정보 띠 → PNG ── */
+  const INLINE_PROPS = ['fill', 'fill-opacity', 'fill-rule', 'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'opacity', 'font-family', 'font-size', 'font-weight', 'font-style', 'text-anchor', 'dominant-baseline', 'paint-order', 'stop-color', 'stop-opacity', 'display', 'visibility', 'letter-spacing', 'font-variant-numeric', 'mix-blend-mode', 'filter', 'clip-path', 'mask', 'transform', 'transform-origin', 'transform-box'];
+  function inlineTree(src, dst) {
+    if (src.nodeType !== 1) return;
+    const cs = getComputedStyle(src);
+    let st = '';
+    for (const p of INLINE_PROPS) {
+      const v = cs.getPropertyValue(p);
+      if (p === 'transform' && (v === 'none' || !src.style.transform)) continue;   // CSS transform만 옮긴다(속성 transform은 그대로 있음)
+      if ((p === 'transform-origin' || p === 'transform-box') && !src.style.transform) continue;
+      if (v !== '' && v !== 'normal' && v !== 'none' || p === 'fill' || p === 'stroke' || (p === 'display' && v === 'none')) st += `${p}:${v};`;   // 숨긴 요소는 PNG에서도 숨긴다
+    }
+    dst.setAttribute('style', st); dst.removeAttribute('class');
+    const a = src.children, b = dst.children;
+    for (let i = 0; i < a.length && i < b.length; i++) inlineTree(a[i], b[i]);
+  }
+  function svgToImage(svg, outW, vbOverride) {
+    const clone = svg.cloneNode(true);
+    inlineTree(svg, clone);
+    clone.querySelectorAll('[data-noexport]').forEach(e => e.remove());
+    clone.querySelectorAll('[tabindex]').forEach(e => e.removeAttribute('tabindex'));
+    const vb = vbOverride || svg.viewBox.baseVal;
+    const outH = Math.round(outW * vb.height / vb.width);
+    clone.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.width} ${vb.height}`);
+    clone.setAttribute('width', outW); clone.setAttribute('height', outH); clone.setAttribute('xmlns', NS);
+    clone.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    const data = new XMLSerializer().serializeToString(clone);
+    const url = URL.createObjectURL(new Blob([data], { type: 'image/svg+xml;charset=utf-8' }));
+    return new Promise((ok, no) => { const img = new Image(); img.onload = () => { URL.revokeObjectURL(url); ok({ img, w: outW, h: outH }); }; img.onerror = e => { URL.revokeObjectURL(url); no(e); }; img.src = url; });
+  }
+  function wrapText(ctx, text, maxW) {
+    const words = String(text).split(' '), lines = []; let line = '';
+    for (const w of words) { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; }
+    if (line) lines.push(line);
+    return lines;
+  }
+  const p2 = n => String(n).padStart(2, '0');
+  async function capture() {
+    const btn = $('#saveBtn');
+    if (!btn || btn.offsetParent === null || btn.getAttribute('aria-busy') === 'true') return;
+    const cap = CFG.capture && CFG.capture();
+    if (!cap || !cap.svg) return;
+    btn.setAttribute('aria-busy', 'true');
+    const slow = setTimeout(() => toast('결과 이미지를 만드는 중이에요…'), 700);
+    try {
+      const css = getComputedStyle(document.documentElement), tok = n => css.getPropertyValue(n).trim();
+      const svg = cap.svg, vb = cap.viewBox || svg.viewBox.baseVal;
+      const r = svg.getBoundingClientRect(), fit = Math.min(r.width / svg.viewBox.baseVal.width, r.height / svg.viewBox.baseVal.height);
+      const outW = Math.round(Math.min(2400, Math.max(1200, vb.width * fit * 2)));
+      const g = await svgToImage(svg, outW, cap.viewBox);
+      const cv = document.createElement('canvas'), ctx = cv.getContext('2d');
+      const k = outW / 1200, pad = 28 * k, font = n => `${n}px 'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif`;
+      ctx.font = `500 ${font(17 * k)}`;
+      const rightW = 300 * k, textW = outW - pad * 3 - rightW;
+      const condL = wrapText(ctx, cap.cond, textW), stateL = wrapText(ctx, cap.state, textW);
+      const bandH = pad * 2 + 50 * k + (condL.length + stateL.length) * 26 * k;
+      cv.width = outW; cv.height = Math.round(g.h + bandH);
+      ctx.fillStyle = tok(cap.bg || '--stage'); ctx.fillRect(0, 0, outW, g.h);
+      ctx.drawImage(g.img, 0, 0, g.w, g.h);
+      ctx.fillStyle = tok('--surface-1'); ctx.fillRect(0, g.h, outW, cv.height - g.h);
+      ctx.fillStyle = tok('--line-2'); ctx.fillRect(0, g.h, outW, Math.max(1, k));
+      let y = g.h + pad + 14 * k;
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = tok('--text-2'); ctx.font = `600 ${font(14 * k)}`; ctx.fillText('실험 결과 · 송쌤과학 가상실험실', pad, y);
+      y += 30 * k; ctx.fillStyle = tok('--text-1'); ctx.font = `800 ${font(22 * k)}`; ctx.fillText(cap.title || CFG.title, pad, y);
+      ctx.font = `500 ${font(17 * k)}`; ctx.fillStyle = tok('--text-1');
+      for (const l of condL) { y += 26 * k; ctx.fillText(l, pad, y); }
+      ctx.fillStyle = tok('--text-2');
+      for (const l of stateL) { y += 26 * k; ctx.fillText(l, pad, y); }
+      const now = new Date();
+      ctx.textAlign = 'right'; let ry = g.h + pad + 30 * k; const rx = outW - pad;
+      ctx.fillStyle = tok('--text-2'); ctx.font = `500 ${font(15 * k)}`;
+      ctx.fillText(`${now.getFullYear()}-${p2(now.getMonth() + 1)}-${p2(now.getDate())} ${p2(now.getHours())}:${p2(now.getMinutes())}`, rx, ry); ry += 26 * k;
+      ctx.fillText('© 송쌤과학 · @songsamscience', rx, ry);
+      ctx.textAlign = 'left';
+      const blob = await new Promise(ok => cv.toBlob(ok, 'image/png'));
+      if (!blob) throw new Error('blob');
+      const fname = `${CFG.file}_실험결과_${now.getFullYear()}${p2(now.getMonth() + 1)}${p2(now.getDate())}-${p2(now.getHours())}${p2(now.getMinutes())}.png`.replace(/[\\/:*?"<>|\s]/g, '');
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fname; document.body.appendChild(a); a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+      window.__lastCapture = { name: fname, w: cv.width, h: cv.height, url: cv.toDataURL('image/png') };
+      if (!REDUCED && cap.flashEl) { const f = document.createElement('div'); f.className = 'shutter'; cap.flashEl.appendChild(f); setTimeout(() => f.remove(), 340); }
+      toast(`실험 결과를 PNG로 저장했어요 — ${fname}`);
+    } catch (e) {
+      console.error(e);
+      toast('이미지로 저장하지 못했어요. 기기의 화면 캡처를 이용해 주세요.', { error: true });
+    } finally { clearTimeout(slow); btn.removeAttribute('aria-busy'); }
+  }
 
-            const resetExperiment = () => {
-                setWeightCount(0);
-                triggerAnimation();
-            };
+  /* ── 애니메이션 루프: rAF + 델타 타임, 탭이 숨으면 멈춤 ── */
+  function loop(step) {
+    let last = 0, id = 0, on = true;
+    const f = t => { if (!on) return; const dt = last ? Math.min(0.05, (t - last) / 1000) : 0; last = t; step(dt); id = requestAnimationFrame(f); };
+    const vis = () => { if (document.hidden) { cancelAnimationFrame(id); last = 0; } else if (on) { last = 0; id = requestAnimationFrame(f); } };
+    document.addEventListener('visibilitychange', vis);
+    id = requestAnimationFrame(f);
+    return { stop() { on = false; cancelAnimationFrame(id); document.removeEventListener('visibilitychange', vis); } };
+  }
 
-            const toggleUnit = () => {
-                setUnit(prev => prev === 'g' ? 'N' : 'g');
-            };
+  /* ── SVG 작은 도구 ── */
+  function el(tag, attrs = {}, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) if (attrs[k] != null) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  /* 화면 좌표 → SVG 좌표 */
+  function svgPoint(svg, x, y) { const p = svg.createSVGPoint(); p.x = x; p.y = y; return p.matrixTransform(svg.getScreenCTM().inverse()); }
 
-            const toggleGraphMode = () => {
-                setGraphMode(prev => prev === 'default' ? 'force' : 'default');
-            };
+  /* ── 초기화 ── */
+  function init(cfg) {
+    CFG = cfg;
+    $('#brandIc').innerHTML = icon('flask');
+    $('#yt').innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS.yt}</svg>`;
+    $('#ig').innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS.ig}</svg>`;
+    $('#yt').href = CHANNELS.yt; $('#ig').href = CHANNELS.ig;
+    $('#bookBtn').innerHTML = icon('book');
+    $('#helpBtn').innerHTML = icon('help');
+    $$('[data-close]').forEach(b => { if (!b.innerHTML.trim()) b.innerHTML = icon('x'); });
+    const sb = $('#saveBtn'); if (sb) sb.innerHTML = `${icon('camera')}<span class="save-l">결과 저장</span>`;
+    applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+    syncFull();
+    document.addEventListener('fullscreenchange', () => { syncFull(); if (CFG.onResize) requestAnimationFrame(CFG.onResize); });
+    $('#themeBtn').addEventListener('click', toggleTheme);
+    $('#fullBtn').addEventListener('click', toggleFull);
+    $('#helpBtn').addEventListener('click', openHelp);
+    $('#bookBtn').addEventListener('click', openDrawer);
+    if (sb) sb.addEventListener('click', capture);
+    $('#dHelp').addEventListener('click', () => { $('#drawer').close(); openHelp(); });
+    document.addEventListener('click', e => {
+      const c = e.target.closest('[data-close]'); if (c) { const d = c.closest('dialog'); if (d) d.close(); }
+    });
+    ['modal', 'drawer'].forEach(id => {
+      const d = $('#' + id);
+      d.addEventListener('close', () => { if (lastTrigger && document.contains(lastTrigger)) lastTrigger.focus({ preventScroll: true }); });
+      d.addEventListener('click', e => { if (e.target === d) d.close(); });   // 스크림(바깥) 누르면 닫기
+    });
+    document.addEventListener('keydown', e => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target;
+      if (t.closest && t.closest('input:not([type="range"]),textarea,select,[contenteditable="true"]')) return;
+      const k = e.key.toLowerCase();
+      const inDialog = $('#modal').open || $('#drawer').open;
+      if (k === 'f') { e.preventDefault(); toggleFull(); }
+      else if (k === 'd') { e.preventDefault(); toggleTheme(); }
+      else if (k === 'h') { e.preventDefault(); if ($('#modal').open) $('#modal').close(); else openHelp(); }
+      else if (k === 'c' && !inDialog) { e.preventDefault(); capture(); }
+      else if (CFG.onKey && !inDialog) CFG.onKey(e);
+    });
+    let rz = 0;
+    addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => CFG.onResize && CFG.onResize()); });
+  }
 
-            const triggerAnimation = () => {
-                setIsAnimating(true);
-                setTimeout(() => setIsAnimating(false), 300);
-            };
+  return { $, $$, NS, CHANNELS, REDUCED, ICONS, icon, esc, store, announce, toast, applyTheme, toggleTheme, openModal, openHelp, openDrawer, capture, loop, el, svgPoint, init, onTheme: f => themeHooks.push(f) };
+})();
 
-            const generateSpringPath = (height) => {
-                const coils = 10;
-                const width = 40;
-                const startX = 50;
-                
-                let path = `M ${startX} 0 `;
-                path += `L ${startX} 10 `;
-                
-                let currentY = 10;
-                const coilHeight = (height - 20) / coils;
+/* ═══════ 이 실험실 ═══════ */
+/* ───────── 용수철 탄성력 실험 — 추를 걸고 자로 재어 기록표·그래프로 ───────── */
+const APP_VERSION = '2.0', APP_DATE = '2026-10-01';
+const { $, $$, el, icon, toast, announce, store } = SS;
 
-                for (let i = 0; i < coils; i++) {
-                    currentY += coilHeight;
-                    const x = i % 2 === 0 ? startX + width/2 : startX - width/2;
-                    path += `L ${x} ${currentY - coilHeight/2} `;
-                    path += `L ${startX} ${currentY} `;
-                }
+/* ── 과학 진실층 ── */
+const G = 9.8, W_MASS = 0.1, W_N = +(W_MASS * G).toFixed(2);         // 추 한 개: 질량 100 g, 무게 0.98 N
+const NMAX = 5;
+const SPRINGS = {                                                     // 용수철 상수 k = 무게 / 늘어난 길이
+  A: { name: 'A 가는 용수철', L0: 100, k: 49, turns: 18, R: 8, wire: 1.3 },   // 100 g마다 2.0 cm
+  B: { name: 'B 굵은 용수철', L0: 80, k: 98, turns: 12, R: 10, wire: 2.0 },   // 100 g마다 1.0 cm
+};
+const ZETA = .12, M_SPRING = .01;                                     // 출렁임 감쇠비 · 용수철 자체 질량(움직임에만)
+/* ── 장면 좌표: 1 유닛 = 1 mm ── */
+const X_AX = 165, Y_ZERO = 62, PITCH = 36, FA = 20;                   // 용수철 축 · 자의 0 눈금 높이 · 추 한 칸 · 힘 화살표 1 N = 20 mm
+const RUL = { x0: 104, x1: 128 }, BENCH_Y = 500;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const f1 = v => (Math.round(v * 10) / 10).toFixed(1), f2 = v => v.toFixed(2);
 
-                path += `L ${startX} ${height} `;
-                return path;
-            };
+/* ── 상태 ── */
+let S = Object.assign({ sp: 'A', n: 0, yMode: 'ext' }, store.get('ui', {}));
+let recs = store.get('recs', []);
+const dyn = { y: 0, v: 0 };            // 늘어난 길이(m) · 속도
+function eqY() { return S.n * W_N / SPRINGS[S.sp].k; }
+dyn.y = eqY();
+const settled = () => Math.abs(dyn.y - eqY()) < 3e-4 && Math.abs(dyn.v) < 3e-3;
+function save() { store.set('ui', S); store.set('recs', recs); }
+const lenMM = () => SPRINGS[S.sp].L0 + dyn.y * 1000;                  // 지금 용수철 길이(mm)
+const readCm = () => Math.round(lenMM()) / 10;                        // 자는 1 mm 단위로 읽는다
 
-            const cmToPx = (cm) => cm * 15;
-            const springPixelHeight = cmToPx(currentLength);
+/* ═════════ 장면 ═════════ */
+const svg = $('#scene');
+let pxu = 1.4;
+function buildStatic() {
+  const b = $('#gBench');
+  el('rect', { x: -20, y: BENCH_Y, width: 320, height: 30, class: 'bench' }, b);
+  el('rect', { x: -20, y: BENCH_Y, width: 320, height: 1.2, class: 'bench-edge' }, b);
+  el('text', { x: 6, y: 508.5, class: 'cap-s', 'dominant-baseline': 'central' }, b).textContent = '옆에서 본 모습 · 1 mm 눈금 자';
+  const s = $('#gStand');
+  el('rect', { x: 14, y: 486, width: 182, height: 14, rx: 3, class: 'base' }, s);
+  el('rect', { x: 36, y: 30, width: 12, height: 456, rx: 2, class: 'rod' }, s);
+  el('rect', { x: 34, y: 28, width: 16, height: 5, rx: 2, class: 'boss' }, s);
+  // 용수철 걸이: 보스헤드 + 가로 막대
+  el('rect', { x: 28, y: 38, width: 28, height: 20, rx: 2.5, class: 'boss' }, s);
+  el('rect', { x: 30, y: 39.5, width: 24, height: 2, rx: 1, class: 'boss-hi' }, s);
+  el('rect', { x: 18, y: 44, width: 10, height: 8, rx: 2, class: 'knob' }, s);
+  el('rect', { x: 56, y: 44, width: 124, height: 8, rx: 3, class: 'arm' }, s);
+  // 자 고정대
+  for (const y of [96, 330]) {
+    el('rect', { x: 30, y: y - 8, width: 24, height: 16, rx: 2.5, class: 'boss' }, s);
+    el('rect', { x: 20, y: y - 3.5, width: 10, height: 7, rx: 2, class: 'knob' }, s);
+    el('rect', { x: 54, y: y - 3, width: RUL.x0 - 54 + 2, height: 6, rx: 2, class: 'arm' }, s);
+  }
+  // 자: 0 눈금 = 용수철 윗고리 (용수철 길이를 바로 읽는다)
+  el('rect', { x: RUL.x0, y: Y_ZERO - 6, width: RUL.x1 - RUL.x0, height: 312, rx: 1.2, class: 'ruler' }, $('#gRuler'));
+  el('g', { id: 'rTicks' }, $('#gRuler'));
+  // 추 상자(3단 받침)
+  const t = $('#gTray');
+  el('rect', { x: 198, y: 386, width: 62, height: 114, rx: 3, class: 'tray' }, t);          // 3단 추 받침: 추의 아래 고리가 선반에 닿는다
+  for (const y of [428, 464]) el('rect', { x: 198, y, width: 62, height: 2.2, class: 'tray' }, t);
+  el('text', { x: 229, y: 380, class: 'tray-t' }, t).textContent = '추 100 g';
+  // 돋보기
+  const L = $('#gLoupe');
+  el('line', { x1: 246, y1: 146, x2: 256, y2: 160, class: 'lens-handle' }, L);
+  el('circle', { cx: 222, cy: 120, r: 34, class: 'lens-bg' }, L);
+  el('g', { id: 'lensIn', 'clip-path': 'url(#loupeClip)' }, L);
+  el('circle', { cx: 222, cy: 120, r: 34, class: 'lens-ring' }, L);
+  el('text', { id: 'lensT', x: 222, y: 170, class: 'lens-t' }, L);
+  el('text', { x: 222, y: 80, class: 'lens-cap' }, L).textContent = '돋보기 ×3';
+}
+function buildRulerTicks() {
+  const g = $('#rTicks'); g.innerHTML = '';
+  const every = 10 * pxu >= 15 ? 1 : 10 * pxu >= 7 ? 2 : 5, fs = Math.min(7, 11 / pxu);
+  for (let mm = 0; mm <= 300; mm++) {
+    const y = Y_ZERO + mm, maj = mm % 10 === 0, mid = mm % 5 === 0;
+    if (pxu < .9 && !mid) continue;
+    el('line', { x1: RUL.x1 - (maj ? 9 : mid ? 6 : 3.5), y1: y, x2: RUL.x1, y2: y, class: `r-tick${maj ? ' maj' : mid ? ' mid' : ''}` }, g);
+    if (maj && (mm / 10) % every === 0) el('text', { x: RUL.x1 - 11, y, class: 'r-num', style: `font-size:${fs.toFixed(2)}px` }, g).textContent = mm / 10;
+  }
+}
+function springPath(sp, y0, y1) {                     // 앞·뒤 가닥을 나눈 나선(옆모습)
+  const P = SPRINGS[sp], n = P.turns, R = P.R, x = X_AX, p = (y1 - y0) / n;
+  let back = '', front = '';
+  for (let i = 0; i < n; i++) {
+    const ya = y0 + i * p;
+    front += `M${x - R} ${ya.toFixed(2)}Q${x} ${(ya + p * .5 + p * .15).toFixed(2)} ${x + R} ${(ya + p * .5).toFixed(2)}`;
+    back += `M${x + R} ${(ya + p * .5).toFixed(2)}Q${x} ${(ya + p * .5 + p * .1).toFixed(2)} ${x - R} ${(ya + p).toFixed(2)}`;
+  }
+  return { back, front };
+}
+function weightG(parent, x, y, extra = {}) {         // 고리 추: y = 고리 꼭대기
+  const g = el('g', extra, parent);
+  el('path', { d: `M${x} ${y + 8}V${y + 3}a3 3 0 1 1 3 -3`, class: 'hook' }, g);
+  el('rect', { x: x - 12.5, y: y + 8, width: 25, height: 24, rx: 2.5, class: 'w-body' }, g);
+  el('rect', { x: x - 11, y: y + 9, width: 22, height: 2.2, rx: 1, class: 'w-top' }, g);
+  el('path', { d: `M${x - 3} ${y + 32}a3 3 0 1 0 6 0`, class: 'hook' }, g);
+  if (pxu >= 1.1) el('text', { x, y: y + 21, class: 'w-lbl' }, g).textContent = '100 g';
+  return g;
+}
+function render() {
+  const P = SPRINGS[S.sp], L = lenMM(), yb = Y_ZERO + L;
+  // 용수철
+  const gs = $('#gSpring'); gs.innerHTML = '';
+  el('path', { d: `M${X_AX} 52V${Y_ZERO - 2}a3.5 3.5 0 1 0 0 7`, class: 'hook' }, gs);
+  const c0 = Y_ZERO + 6, c1 = yb - 6, sp = springPath(S.sp, c0, c1);
+  el('path', { d: `M${X_AX} ${Y_ZERO + 5}L${X_AX - P.R} ${c0}`, class: 'sp-front', 'stroke-width': P.wire }, gs);
+  el('path', { d: sp.back, class: 'sp-back', 'stroke-width': P.wire * .85 }, gs);
+  el('path', { d: sp.front, class: 'sp-front', 'stroke-width': P.wire }, gs);
+  el('path', { d: `M${X_AX - P.R} ${c1}L${X_AX} ${yb - 4}V${yb - 1}a3.5 3.5 0 1 1 -3.5 3.5`, class: 'sp-front', 'stroke-width': P.wire }, gs);
+  // 매단 추
+  const gh = $('#gHang'); gh.innerHTML = '';
+  for (let i = 0; i < S.n; i++) {
+    const g = weightG(gh, X_AX, yb + i * PITCH);
+    if (i === S.n - 1) { const h = el('rect', { x: X_AX - 16, y: yb + i * PITCH, width: 32, height: 36, class: 'w-hit', 'data-noexport': '' }, g); h.dataset.hang = '1'; }
+  }
+  // 지침
+  const gp = $('#gPointer'); gp.innerHTML = '';
+  el('line', { x1: X_AX - 3, y1: yb, x2: RUL.x1 + 1.5, y2: yb, class: 'pointer' }, gp);
+  el('path', { d: `M${RUL.x1 - 1} ${yb}l4 -2v4Z`, class: 'pointer-tip' }, gp);
+  // 상자 속 남은 추
+  const gt = $('#gTray'); $$('.tray-w', gt).forEach(e => e.remove());
+  const slots = [[214, 464], [244, 464], [214, 428], [244, 428], [214, 392]];
+  for (let i = 0; i < NMAX - S.n; i++) {
+    const [x, y] = slots[i], g = weightG(gt, x, y, { class: 'tray-w' });
+    const h = el('rect', { x: x - 15, y: y - 2, width: 30, height: 34, class: 'w-tray-hit', 'data-noexport': '' }, g); h.dataset.tray = '1';
+  }
+  // 힘 화살표: 추에 작용하는 두 힘 — 탄성력(위, 고리에서) · 무게(아래, 추 가운데에서)
+  const gf = $('#gForces'); gf.innerHTML = '';
+  if (S.n > 0) {
+    const Fel = P.k * dyn.y, Wt = S.n * W_N;
+    arrow(gf, 'fa-up', X_AX + 22, yb, -Fel * FA, pxu < 1 ? `${f2(Fel)} N` : `탄성력 ${f2(Fel)} N`, 'start');
+    const cy = yb + S.n * PITCH / 2;
+    arrow(gf, 'fa-dn', X_AX + 22, cy, Wt * FA, pxu < 1 ? `${f2(Wt)} N` : `추의 무게 ${f2(Wt)} N`, 'start');
+    el('line', { x1: X_AX + 13, y1: yb, x2: X_AX + 22, y2: yb, class: 'hook', style: 'stroke-dasharray:1.5 1.5' }, gf);
+    el('line', { x1: X_AX + 13, y1: cy, x2: X_AX + 22, y2: cy, class: 'hook', style: 'stroke-dasharray:1.5 1.5' }, gf);
+  }
+  renderLoupe(yb);
+  syncPanel();
+}
+function arrow(g, cls, x, y, dy, label, anchor) {
+  const gg = el('g', { class: cls }, g), hd = Math.min(7, Math.abs(dy) * .45), s = Math.sign(dy) || 1;
+  el('line', { x1: x, y1: y, x2: x, y2: y + dy - s * hd, class: 'fa-body' }, gg);
+  el('path', { d: `M${x} ${y + dy}L${x - 3.6} ${y + dy - s * hd}L${x + 3.6} ${y + dy - s * hd}Z`, class: 'fa-head' }, gg);
+  el('circle', { cx: x, cy: y, r: 2.4, class: 'fa-dot fa-head' }, gg);
+  el('text', { x: x + 6, y: y + dy * .55, class: 'fa-t', 'text-anchor': anchor, 'dominant-baseline': 'central' }, gg).textContent = label;
+}
+function renderLoupe(yb) {                             // 지침 둘레의 자를 3배로
+  const g = $('#lensIn'); g.innerHTML = '';
+  const cx = 222, cy = 120, k = 3, ox = RUL.x1 - 6;       // 확대 기준점: 자 오른쪽 가장자리 근처
+  const tx = v => cx + (v - ox) * k, ty = v => cy + (v - yb) * k;
+  el('rect', { x: tx(RUL.x0), y: cy - 40, width: (RUL.x1 - RUL.x0) * k, height: 80, class: 'ruler' }, g);
+  const lo = Math.floor(yb - Y_ZERO - 14), hi = Math.ceil(yb - Y_ZERO + 14);
+  for (let mm = Math.max(0, lo); mm <= Math.min(300, hi); mm++) {
+    const y = ty(Y_ZERO + mm), maj = mm % 10 === 0, mid = mm % 5 === 0;
+    el('line', { x1: tx(RUL.x1 - (maj ? 9 : mid ? 6 : 3.5)), y1: y, x2: tx(RUL.x1), y2: y, class: `r-tick${maj ? ' maj' : mid ? ' mid' : ''}`, style: 'stroke-width:1' }, g);
+    if (maj) el('text', { x: tx(RUL.x1 - 11), y, class: 'r-num', style: 'font-size:11px' }, g).textContent = mm / 10;
+  }
+  el('line', { x1: tx(X_AX - 3), y1: cy, x2: tx(RUL.x1 + 1.5), y2: cy, class: 'pointer', style: 'stroke-width:2' }, g);
+  el('path', { d: `M${tx(RUL.x1 - 1)} ${cy}l10 -5v10Z`, class: 'pointer-tip' }, g);
+  $('#lensT').textContent = settled() ? `${f1(readCm())} cm` : '흔들리는 중…';
+}
 
-            // Chart.js 업데이트 로직
-            useEffect(() => {
-                const ctx = chartRef.current.getContext('2d');
+/* ═════════ 측정 칸 ═════════ */
+function syncPanel() {
+  const P = SPRINGS[S.sp], ok = settled();
+  $('#wCount').textContent = `${S.n}개`;
+  $('#wMinus').disabled = S.n <= 0; $('#wPlus').disabled = S.n >= NMAX;
+  $('#mLen').textContent = f1(ok ? readCm() : lenMM() / 10);
+  $('#mExt').textContent = f1(ok ? readCm() - P.L0 / 10 : dyn.y * 100);
+  $('#mW').textContent = f2(S.n * W_N);
+  const rb = $('#recBtn');
+  rb.setAttribute('aria-disabled', String(!ok));
+  $('#recHint').textContent = ok ? (recs.some(r => r.s === S.sp && r.n === S.n) ? '이미 기록한 조건이에요. 다시 기록하면 바뀌어요.' : '용수철이 멈췄어요. 눈금을 읽어 기록해요.') : '용수철이 멈추면 기록할 수 있어요.';
+  rb.title = ok ? '지금 눈금을 기록표에 적어요' : '용수철이 멈추면 기록할 수 있어요';
+  $$('#springSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.s === S.sp)));
+  $$('#ySeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.y === S.yMode)));
+}
+function renderTable(freshKey) {
+  const rows = [...recs].sort((a, b) => a.s.localeCompare(b.s) || a.n - b.n);
+  $('#recBody').innerHTML = rows.length ? rows.map(r => `<tr class="${`${r.s}-${r.n}` === freshKey ? 'fresh' : ''}"><td><span class="mk ${r.s}" aria-hidden="true"></span>${r.s}</td><td>${r.n}개</td><td>${f2(r.W)}</td><td>${f1(r.L)}</td><td class="ext">${f1(r.ext)}</td></tr>`).join('')
+    : `<tr class="empty-row"><td colspan="5">추를 걸고 용수철이 멈추면 <b>기록하기</b>를 눌러요. 추 0개(처음 길이)도 기록해요.</td></tr>`;
+  $('#undoBtn').disabled = !recs.length;
+}
+function fitK(pts) { const sxy = pts.reduce((a, p) => a + p[0] * p[1], 0), sxx = pts.reduce((a, p) => a + p[0] * p[0], 0); return sxx ? sxy / sxx : 0; }
+function renderGraph() {
+  const g = $('#graph'); g.innerHTML = '';
+  const X0 = 46, X1 = 346, Y0 = 214, Y1 = 14, ext = S.yMode === 'ext', yMax = ext ? 12 : 22, yStep = ext ? 2 : 5;
+  const xs = w => X0 + w / 5 * (X1 - X0), ys = v => Y0 - v / yMax * (Y0 - Y1);
+  for (let v = 0; v <= yMax; v += yStep) { el('line', { x1: X0, y1: ys(v), x2: X1, y2: ys(v), class: 'g-grid' }, g); el('text', { x: X0 - 8, y: ys(v) + 4, class: 'g-t', 'text-anchor': 'end' }, g).textContent = v; }
+  for (let w = 0; w <= 5; w++) el('text', { x: xs(w), y: Y0 + 17, class: 'g-t', 'text-anchor': 'middle' }, g).textContent = w;
+  el('line', { x1: X0, y1: Y0, x2: X1, y2: Y0, class: 'g-axis' }, g); el('line', { x1: X0, y1: Y0, x2: X0, y2: Y1 - 4, class: 'g-axis' }, g);
+  el('text', { x: X1, y: Y0 + 33, class: 'g-title', 'text-anchor': 'end' }, g).textContent = '추의 무게 (N)';
+  el('text', { x: 6, y: 10, class: 'g-title' }, g).textContent = ext ? '늘어난 길이 (cm)' : '용수철 길이 (cm)';
+  const lines = [];
+  for (const s of ['A', 'B']) {
+    const pts = recs.filter(r => r.s === s).sort((a, b) => a.n - b.n).map(r => [r.W, ext ? r.ext : r.L]);
+    if (pts.length >= 2) {
+      if (ext) { const k = fitK(pts), wEnd = Math.min(5, yMax / (k || 1)); el('line', { x1: xs(0), y1: ys(0), x2: xs(wEnd), y2: ys(k * wEnd), class: s === 'A' ? 'g-la' : 'g-lb' }, g); lines.push([s, wEnd, k * wEnd]); }
+      else { const n = pts.length, mx = pts.reduce((a, p) => a + p[0], 0) / n, my = pts.reduce((a, p) => a + p[1], 0) / n, sl = pts.reduce((a, p) => a + (p[0] - mx) * (p[1] - my), 0) / (pts.reduce((a, p) => a + (p[0] - mx) ** 2, 0) || 1), b0 = my - sl * mx, wEnd = Math.min(5, (yMax - b0) / (sl || 1)); el('line', { x1: xs(0), y1: ys(b0), x2: xs(wEnd), y2: ys(b0 + sl * wEnd), class: s === 'A' ? 'g-la' : 'g-lb' }, g); lines.push([s, wEnd, b0 + sl * wEnd]); }
+    }
+    pts.forEach(([w, v]) => s === 'A' ? el('circle', { cx: xs(w), cy: ys(v), r: 5, class: 'g-a' }, g) : el('rect', { x: xs(w) - 4.5, y: ys(v) - 4.5, width: 9, height: 9, class: 'g-b' }, g));
+  }
+  lines.forEach(([s, w, v]) => el('text', { x: xs(w) + 6, y: ys(v) + 4, class: 'g-lab', style: `fill:var(--data-${s.toLowerCase()})` }, g).textContent = s);
+  if (settled()) { const P = SPRINGS[S.sp], v = ext ? readCm() - P.L0 / 10 : readCm(); el('circle', { cx: xs(S.n * W_N), cy: ys(v), r: 8, class: 'g-now' }, g); }
+  // 찾은 것(기록에서 계산)
+  const f = $('#find'), per = s => { const pts = recs.filter(r => r.s === s && r.n > 0).map(r => [r.W, r.ext]); return pts.length >= 2 ? fitK(pts) * W_N : null; };
+  const a = per('A'), b = per('B'), nA = recs.filter(r => r.s === 'A').length, nB = recs.filter(r => r.s === 'B').length;
+  if (!ext && (nA >= 2 || nB >= 2)) f.textContent = '용수철 길이는 처음부터 있어서 그래프가 0에서 시작하지 않아요. ‘늘어난 길이’로 바꿔 보세요.';
+  else if (a != null && b != null) f.textContent = `추 한 개(0.98 N)마다 A는 ${f1(a)} cm, B는 ${f1(b)} cm씩 늘어났어요. 같은 힘에 B가 덜 늘어나요.`;
+  else if (a != null || b != null) f.textContent = `추 한 개(0.98 N)마다 ${a != null ? 'A' : 'B'}가 ${f1(a ?? b)} cm씩 늘어났어요.${nA + nB >= 3 ? ` 다른 용수철로도 재어 볼까요?` : ''}`;
+  else f.textContent = '추를 하나씩 걸고 기록해 점을 3개 이상 찍어 보세요.';
+}
 
-                if (chartInstance.current) {
-                    chartInstance.current.destroy();
-                }
+/* ═════════ 추 걸기 · 물리 ═════════ */
+function setN(n, how) {
+  n = clamp(n, 0, NMAX); if (n === S.n) return;
+  S.n = n; save(); render(); renderGraph();
+  announce(`추 ${n}개. ${how || ''}`);
+}
+function setSpring(sp) {
+  if (sp === S.sp) return;
+  S.sp = sp; S.n = 0; dyn.y = 0; dyn.v = 0; save(); render(); renderGraph();
+  announce(`${SPRINGS[sp].name}로 바꿨어요. 추를 모두 내렸어요.`);
+}
+function record() {
+  if (!settled()) { toast('용수철이 멈추면 기록할 수 있어요.'); return; }
+  const P = SPRINGS[S.sp], L = readCm(), key = `${S.sp}-${S.n}`;
+  recs = recs.filter(r => `${r.s}-${r.n}` !== key);
+  recs.push({ s: S.sp, n: S.n, W: +(S.n * W_N).toFixed(2), L, ext: +(L - P.L0 / 10).toFixed(1) });
+  save(); renderTable(key); renderGraph(); syncPanel();
+  announce(`${S.sp} 용수철, 추 ${S.n}개: 길이 ${f1(L)} 센티미터 기록`);
+}
+let wasSettled = true;
+function step(dt) {
+  const P = SPRINGS[S.sp], m = S.n * W_MASS + M_SPRING, yEq = eqY();
+  if (!settled()) {
+    const b = 2 * ZETA * Math.sqrt(P.k * m), n = Math.max(1, Math.ceil(dt * 600)), h = dt / n;
+    for (let i = 0; i < n; i++) { const a = (S.n * W_N - P.k * dyn.y - b * dyn.v) / m; dyn.v += a * h; dyn.y += dyn.v * h; }
+    if (settled()) { dyn.y = yEq; dyn.v = 0; }
+    render();
+  }
+  const s = settled(); if (s !== wasSettled) { wasSettled = s; renderGraph(); syncPanel(); }
+}
 
-                let config = {};
+/* ── 끌기·누르기: 상자의 추 → 고리, 맨 아래 추 → 상자 ── */
+let drag = null;
+svg.addEventListener('pointerdown', e => {
+  const t = e.target.closest('[data-tray],[data-hang]'); if (!t) return;
+  e.preventDefault();
+  const from = t.dataset.tray ? 'tray' : 'hang';
+  if (from === 'tray' && S.n >= NMAX) return;
+  drag = { from, x0: e.clientX, y0: e.clientY, moved: false, g: null, id: e.pointerId };
+  svg.setPointerCapture(e.pointerId);
+});
+svg.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (!drag.moved && Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) > 5) {
+    drag.moved = true;
+    if (drag.from === 'hang') { S.n--; render(); }                       // 맨 아래 추를 떼어 든다
+    else { drag.took = true; }
+  }
+  if (drag.moved) {
+    const p = SS.svgPoint(svg, e.clientX, e.clientY), gd = $('#gDrag'); gd.innerHTML = '';
+    weightG(gd, p.x, p.y - 14, { style: 'opacity:.9' });
+    const yb = Y_ZERO + lenMM() + S.n * PITCH, near = Math.hypot(p.x - X_AX, p.y - 14 - yb) < 48;
+    if (near) el('rect', { x: X_AX - 17, y: yb - 2, width: 34, height: 38, rx: 4, class: 'drop-zone' }, gd);
+    drag.near = near;
+  }
+});
+function endDrag() {
+  if (!drag) return;
+  $('#gDrag').innerHTML = '';
+  const d = drag; drag = null;
+  if (!d.moved) { d.from === 'tray' ? setN(S.n + 1, '추를 걸었어요') : setN(S.n - 1, '추를 내렸어요'); return; }
+  if (d.from === 'tray') { if (d.near) setN(S.n + 1, '추를 걸었어요'); else render(); }
+  else if (d.near) { S.n++; save(); render(); }                       // 도로 걸었다
+  else { save(); renderGraph(); announce(`추 ${S.n}개. 추를 내렸어요`); }
+}
+svg.addEventListener('pointerup', endDrag); svg.addEventListener('pointercancel', endDrag);
 
-                if (graphMode === 'default') {
-                    // 모드 1: 전체 길이(X) vs 추의 개수(Y)
-                    const dataPoints = [];
-                    for(let i = 0; i <= weightCount; i++) {
-                        dataPoints.push({
-                            x: BASE_LENGTH + (i * EXTENSION_PER_WEIGHT),
-                            y: i 
-                        });
-                    }
+/* ═════════ 원리 카드 · 도움말 ═════════ */
+function theory() {
+  const a = recs.filter(r => r.s === 'A' && r.n > 0);
+  return `<article class="tcard"><h3>탄성력</h3>
+    <figure><svg viewBox="0 0 300 110" role="img" aria-label="늘어난 용수철은 원래대로 돌아가려고 반대 방향으로 힘을 낸다">
+      <rect width="300" height="110" style="fill:var(--stage)"/><rect x="10" y="20" width="10" height="70" style="fill:var(--rod-lo)"/>
+      <path d="M20 55h10${Array.from({ length: 9 }, (_, i) => `l8 ${i % 2 ? 12 : -12}`).join('')}l8 0h12" style="fill:none;stroke:var(--spring-front);stroke-width:2.5;stroke-linejoin:round"/>
+      <rect x="130" y="40" width="30" height="30" rx="3" style="fill:var(--brass)"/>
+      <line x1="160" y1="55" x2="240" y2="55" style="stroke:var(--force);stroke-width:4"/><path d="M252 55 238 47v16Z" style="fill:var(--force)"/>
+      <line x1="130" y1="80" x2="80" y2="80" style="stroke:var(--force-2);stroke-width:4"/><path d="M68 80 82 72v16Z" style="fill:var(--force-2)"/>
+      <text x="200" y="40" style="fill:var(--text-1);font:700 13px var(--font-ui);text-anchor:middle">당기는 힘</text>
+      <text x="100" y="102" style="fill:var(--text-1);font:700 13px var(--font-ui);text-anchor:middle">탄성력</text>
+    </svg></figure>
+    <p class="def">변형된 물체가 원래 모양으로 돌아가려는 힘을 탄성력이라고 해요.</p>
+    <p>탄성력은 물체를 변형시킨 힘과 반대 방향으로 작용해요. 용수철에 매단 추가 멈춰 있을 때는 위로 작용하는 탄성력과 아래로 작용하는 추의 무게가 크기는 같고 방향은 반대예요(힘의 평형).</p>
+    <p class="link">장면의 두 화살표를 보세요. 용수철이 출렁이는 동안에는 길이가 달라지다가, 멈추면 같은 길이가 돼요.</p></article>
+  <article class="tcard"><h3>늘어난 길이는 무게에 비례해요</h3>
+    <p class="def">용수철이 늘어난 길이는 매단 물체의 무게(용수철을 당기는 힘)에 비례해요.</p>
+    <p>그래서 ‘늘어난 길이’ 그래프는 원점을 지나는 직선이 돼요. 같은 힘에 덜 늘어나는 용수철은 기울기가 작아요. 용수철을 너무 많이 늘이면 원래대로 돌아오지 않으니(탄성 한계) 이 실험은 추 5개까지만 걸어요.</p>
+    <p class="link">${a.length >= 2 ? `기록한 A: ${a.map(r => `${f2(r.W)} N → ${f1(r.ext)} cm`).join(', ')}.` : '기록을 3개 이상 모은 뒤 그래프의 모양을 보세요.'}</p></article>
+  <article class="tcard"><h3>질량과 무게는 달라요</h3>
+    <p class="def">질량(g, kg)은 물체의 양, 무게(N)는 지구가 물체를 당기는 힘의 크기예요.</p>
+    <p>지구에서 질량 1 kg인 물체의 무게는 약 9.8 N이에요. 그래서 100 g 추 한 개의 무게는 0.98 N이에요. 달에 가면 질량은 그대로지만 무게는 약 1/6로 줄어요.</p></article>`;
+}
+const HELP = {
+  how: `<ol><li>오른쪽 아래 상자의 <b>추</b>를 누르거나 용수철 아래로 끌어 걸어요(＋ 단추로도 걸 수 있어요). 맨 아래 추를 누르면 내려요.</li>
+    <li>용수철이 출렁이다 <b>멈추면</b> 지침이 가리키는 자의 눈금을 읽고 <b>기록하기</b>를 눌러요. 돋보기에 눈금이 3배로 보여요. 추 0개(처음 길이)부터 기록해요.</li>
+    <li>기록표의 ‘늘어난 길이’와 그래프를 보고 추의 무게와의 관계를 찾아요. <b>용수철 B</b>로 바꿔 같은 실험을 하고 두 직선의 기울기를 비교해요.</li></ol>`,
+  keys: '<kbd>+</kbd> 추 걸기 · <kbd>−</kbd> 추 내리기 · 기록하기 단추에 포커스 후 <kbd>Enter</kbd>',
+  model: `<ul><li>추 한 개는 질량 100 g, 무게 0.98 N(지구에서 1 kg의 무게 9.8 N)으로 계산했어요.</li>
+    <li>용수철 A는 추 한 개마다 2.0 cm, B는 1.0 cm 늘어나도록 정했어요(A 49 N/m, B 98 N/m). 추 5개까지는 탄성 한계 안이라 늘어난 길이가 무게에 비례해요.</li>
+    <li>자의 0 눈금은 용수철 윗고리에 맞췄고, 지침이 가리키는 눈금이 용수철 길이예요. 자는 1 mm 단위로 읽어요.</li>
+    <li>추를 걸면 용수철이 잠시 출렁이다 멈춰요(감쇠가 있는 진동). 멈춘 뒤에만 기록할 수 있어요.</li>
+    <li>용수철 자체의 무게는 늘어나는 길이에 넣지 않았어요.</li></ul>`,
+  source: '<p>2022 개정 중학교 과학 ‘힘의 작용’ 탐구 활동 ‘용수철의 탄성력 측정하기’와 [9과05-02] 중력, 탄성력, 마찰력, 부력을 이해하고, 각 힘의 특징을 크기와 방향으로 설명할 수 있다(해설: 질량과 무게를 구별). 이전 판(React 한 화면)의 기능(추 걸기·단위·그래프 두 가지)을 이어받아 다시 만들었어요.</p>',
+  wipe: '기록표, 그래프, 용수철·추 상태',
+};
 
-                    config = {
-                        type: 'line',
-                        data: {
-                            datasets: [{
-                                label: '추의 개수',
-                                data: dataPoints,
-                                borderColor: '#3b82f6',
-                                backgroundColor: '#3b82f6',
-                                borderWidth: 3,
-                                pointBackgroundColor: '#3b82f6',
-                                pointBorderColor: '#fff',
-                                pointBorderWidth: 2,
-                                pointRadius: 5,
-                                pointHoverRadius: 8,
-                                pointHitRadius: 15,
-                                tension: 0
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    type: 'linear',
-                                    title: { display: true, text: '용수철 전체 길이 (cm)' },
-                                    min: 0,
-                                    max: 32,
-                                    ticks: { stepSize: 2 },
-                                    grid: { display: true, color: '#f1f5f9' }
-                                },
-                                y: {
-                                    type: 'linear',
-                                    title: { display: true, text: '추의 개수 (개)' },
-                                    min: 0,
-                                    max: MAX_WEIGHTS,
-                                    ticks: { stepSize: 1 },
-                                    grid: { display: true, color: '#f1f5f9' }
-                                }
-                            },
-                            plugins: {
-                                tooltip: { callbacks: { label: (c) => `길이: ${c.parsed.x}cm, 개수: ${c.parsed.y}개` } },
-                                legend: { display: false }
-                            },
-                            animation: { duration: 400 }
-                        }
-                    };
-                } else {
-                    // 모드 2: 늘어난 길이(X) vs 탄성력(Y)
-                    const dataPoints = [];
-                    for(let i = 0; i <= weightCount; i++) {
-                        dataPoints.push({
-                            x: i * EXTENSION_PER_WEIGHT, 
-                            y: i * N_PER_WEIGHT 
-                        });
-                    }
+/* ═════════ 이벤트 · 시작 ═════════ */
+function capture() {
+  const P = SPRINGS[S.sp], rows = recs.filter(r => r.s === S.sp).sort((a, b) => a.n - b.n);
+  return { svg, flashEl: $('#stage'),
+    cond: `${P.name} · 추 ${S.n}개(무게 ${f2(S.n * W_N)} N) · 처음 길이 ${f1(P.L0 / 10)} cm`,
+    state: `${settled() ? `용수철 길이 ${f1(readCm())} cm · 늘어난 길이 ${f1(readCm() - P.L0 / 10)} cm` : '용수철이 출렁이는 중'}${rows.length ? ` · 기록(${S.sp}): ${rows.map(r => `${r.n}개 ${f1(r.ext)} cm`).join(', ')}` : ''}` };
+}
+function sizeText() {
+  const r = svg.getBoundingClientRect(); if (!r.width) return;
+  pxu = Math.min(r.width / 262, r.height / 492);
+  for (const n of [12, 13, 15]) svg.style.setProperty(`--t${n}`, `${(n / pxu).toFixed(2)}px`);
+  svg.style.setProperty('--h3', `${(3 / pxu).toFixed(3)}px`);
+  svg.classList.toggle('small', pxu < 1);
+  buildRulerTicks(); render();
+}
+function bind() {
+  $('#wMinus').innerHTML = icon('minus'); $('#wPlus').innerHTML = icon('plus');
+  $('#recBtn').innerHTML = `${icon('record')}기록하기`;
+  $('#undoBtn').innerHTML = `${icon('undo')}마지막 기록 지우기`;
+  $('#wMinus').addEventListener('click', () => setN(S.n - 1, '추를 내렸어요'));
+  $('#wPlus').addEventListener('click', () => setN(S.n + 1, '추를 걸었어요'));
+  $('#recBtn').addEventListener('click', record);
+  $('#undoBtn').addEventListener('click', () => { if (!recs.length) return; recs.pop(); save(); renderTable(); renderGraph(); syncPanel(); announce('마지막 기록을 지웠어요.'); });
+  $('#springSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setSpring(b.dataset.s); });
+  $('#ySeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.yMode = b.dataset.y; save(); syncPanel(); renderGraph(); });
+}
+buildStatic(); bind();
+SS.init({
+  id: 'spring-force', title: '용수철 탄성력 실험', file: '용수철탄성력실험', version: APP_VERSION, date: APP_DATE,
+  help: HELP, theory, capture, onResize: sizeText,
+  onKey: e => { if (e.key === '+' || e.key === '=') { e.preventDefault(); setN(S.n + 1, '추를 걸었어요'); } else if (e.key === '-' || e.key === '_') { e.preventDefault(); setN(S.n - 1, '추를 내렸어요'); } },
+  onWipe: () => { S = { sp: 'A', n: 0, yMode: 'ext' }; recs = []; dyn.y = 0; dyn.v = 0; render(); renderTable(); renderGraph(); },
+});
+renderTable(); sizeText(); renderGraph();
+SS.loop(step);
+window.SpringLab = { setN, setSpring, record, step, state: () => ({ S, recs, dyn: { ...dyn }, settled: settled(), read: readCm() }) };
 
-                    config = {
-                        type: 'line',
-                        data: {
-                            datasets: [{
-                                label: '탄성력',
-                                data: dataPoints,
-                                borderColor: '#ef4444',
-                                backgroundColor: '#ef4444',
-                                borderWidth: 3,
-                                pointBackgroundColor: '#ef4444',
-                                pointBorderColor: '#fff',
-                                pointBorderWidth: 2,
-                                pointRadius: 5,
-                                pointHoverRadius: 8,
-                                pointHitRadius: 15,
-                                tension: 0
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                x: {
-                                    type: 'linear',
-                                    title: { display: true, text: '늘어난 길이 (cm)' },
-                                    min: 0,
-                                    max: 20, 
-                                    ticks: { stepSize: 2 },
-                                    grid: { display: true, color: '#f1f5f9' }
-                                },
-                                y: {
-                                    type: 'linear',
-                                    title: { display: true, text: '탄성력 (N)' },
-                                    min: 0,
-                                    max: 10,
-                                    grid: { display: true, color: '#f1f5f9' }
-                                }
-                            },
-                            plugins: {
-                                tooltip: { callbacks: { label: (c) => `늘어난 길이: ${c.parsed.x}cm, 힘: ${c.parsed.y.toFixed(2)}N` } },
-                                legend: { display: false }
-                            },
-                            animation: { duration: 400 }
-                        }
-                    };
-                }
-
-                chartInstance.current = new Chart(ctx, config);
-
-                return () => {
-                    if (chartInstance.current) {
-                        chartInstance.current.destroy();
-                    }
-                };
-            }, [weightCount, graphMode]);
-
-            return (
-                <div className="min-h-screen flex flex-col p-3 md:p-6 font-sans text-slate-800 bg-slate-50">
-                    <header className="mb-4 md:mb-6 text-center flex-none">
-                        <h1 className="text-2xl md:text-3xl font-bold text-blue-700 mb-2">용수철 탄성력 실험</h1>
-                        <p className="text-sm md:text-base text-slate-600">추의 개수를 늘리면 용수철의 길이가 일정하게 늘어납니다.</p>
-                    </header>
-
-                    <div className="flex-grow w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8">
-                        
-                        {/* 왼쪽: 실험 장치 (컨트롤러 통합됨) */}
-                        <div className="bg-white rounded-xl shadow-lg p-4 flex flex-col items-center relative min-h-[500px] lg:min-h-[600px] overflow-hidden">
-                            <h2 className="text-lg font-semibold mb-4 self-start flex items-center gap-2">
-                                <span className="w-2 h-6 bg-blue-500 rounded-sm"></span>
-                                실험 장치
-                            </h2>
-                            
-                            {/* 컨트롤러 (천장 옆 상단 배치) */}
-                            <div className="absolute top-4 right-4 flex flex-col gap-2 z-30 bg-white/80 backdrop-blur-sm p-2 rounded-xl shadow-sm border border-slate-100">
-                                <div className="flex gap-2 mb-1">
-                                    <button
-                                        onClick={addWeight}
-                                        disabled={weightCount >= MAX_WEIGHTS}
-                                        className="w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 disabled:opacity-50 active:scale-95 transition-all"
-                                        title="추 추가"
-                                    >
-                                        <PlusIcon size={24} />
-                                    </button>
-                                    <button
-                                        onClick={removeWeight}
-                                        disabled={weightCount === 0}
-                                        className="w-10 h-10 flex items-center justify-center bg-white border border-slate-200 text-slate-700 rounded-lg shadow-sm hover:bg-red-50 hover:text-red-600 disabled:opacity-50 active:scale-95 transition-all"
-                                        title="추 제거"
-                                    >
-                                        <MinusIcon size={24} />
-                                    </button>
-                                </div>
-                                
-                                <button
-                                    onClick={resetExperiment}
-                                    className="w-full py-1.5 bg-slate-100 text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-colors text-xs font-medium flex items-center justify-center gap-1"
-                                >
-                                    <RotateCcwIcon size={14} />
-                                    초기화
-                                </button>
-                                
-                                <button
-                                    onClick={toggleUnit}
-                                    className="w-full py-1.5 bg-slate-50 border border-slate-100 text-slate-600 hover:bg-slate-100 rounded-lg text-[10px] font-medium transition-colors flex items-center justify-center"
-                                >
-                                    <span className="mr-1">단위:</span>
-                                    <span className={unit === 'g' ? 'text-blue-600 font-bold' : 'text-slate-400'}>g</span>
-                                    <ArrowRightLeftIcon size={10} className="mx-1 text-slate-400" />
-                                    <span className={unit === 'N' ? 'text-blue-600 font-bold' : 'text-slate-400'}>N</span>
-                                </button>
-                                
-                                <div className="mt-1 text-center bg-slate-50 rounded-lg py-1 border border-slate-100">
-                                     <span className="text-[10px] text-slate-400 block">현재 무게</span>
-                                     <span className="text-sm font-bold text-slate-700">{currentWeightValue}</span>
-                                     <span className="text-[10px] text-slate-500 ml-0.5">{unit}</span>
-                                </div>
-                            </div>
-
-                            {/* 천장 고정대 */}
-                            <div className="w-40 md:w-48 h-3 md:h-4 bg-slate-700 rounded-full mb-0 z-10 shadow-md mx-auto mt-2"></div>
-
-                            <div className="flex w-full justify-center relative flex-grow overflow-hidden">
-                                
-                                {/* 자 (Ruler) - 텍스트 잘림 방지를 위해 left-12로 더 넉넉하게 조정 */}
-                                <div className="absolute left-12 md:left-16 top-0 h-full border-r-2 border-slate-300 pr-1 md:pr-2 py-2 select-none z-0">
-                                    {Array.from({ length: 8 }, (_, i) => (
-                                        <div key={i} className="absolute right-0 flex items-center" style={{ top: cmToPx(i * 5) + 10 }}>
-                                            <span className="text-[10px] md:text-xs text-slate-400 mr-1 md:mr-2 whitespace-nowrap">{i * 5}cm</span>
-                                            <div className="w-2 md:w-3 h-px bg-slate-300"></div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* 초기 길이 표시선 */}
-                                <div 
-                                    className="absolute left-0 w-full flex items-center pointer-events-none z-0"
-                                    style={{ top: cmToPx(BASE_LENGTH) + 10 }}
-                                >
-                                    <div className="w-full border-t-2 border-red-300 border-dashed opacity-60"></div>
-                                    <span className="absolute right-2 md:right-auto md:left-24 bg-red-50 text-red-500 text-[10px] md:text-xs px-2 py-0.5 rounded-full border border-red-200 font-medium whitespace-nowrap">
-                                        초기 길이 ({BASE_LENGTH}cm)
-                                    </span>
-                                </div>
-
-                                {/* 용수철 및 추 컨테이너 */}
-                                <div className="relative flex flex-col items-center z-10" style={{ width: '100px' }}>
-                                    <svg width="100" height={springPixelHeight} className={`transition-all duration-500 ease-out ${isAnimating ? 'scale-x-95' : 'scale-x-100'}`}>
-                                        <path
-                                            d={generateSpringPath(springPixelHeight)}
-                                            fill="none"
-                                            stroke="#3b82f6"
-                                            strokeWidth="4"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className="drop-shadow-sm"
-                                        />
-                                    </svg>
-
-                                    {/* 추 (Weights) */}
-                                    <div className="flex flex-col items-center transition-all duration-500 ease-out pb-10">
-                                        <div className="w-4 h-4 rounded-full border-4 border-slate-400 -mt-2 bg-transparent z-10"></div>
-                                        
-                                        {weightCount === 0 ? (
-                                            <div className="text-sm text-slate-400 absolute top-8 w-32 text-center bg-white/90 py-1 px-2 rounded-full border border-slate-100 shadow-sm z-20">
-                                                추를 걸어보세요 👇
-                                            </div>
-                                        ) : (
-                                            Array.from({ length: weightCount }).map((_, idx) => (
-                                                <div 
-                                                    key={idx}
-                                                    className="w-14 md:w-16 h-7 md:h-8 bg-gradient-to-r from-amber-500 to-amber-600 border-2 border-amber-700 rounded-md shadow-md flex items-center justify-center text-[9px] md:text-[10px] font-bold text-white mb-0.5"
-                                                >
-                                                    {singleWeightLabel}
-                                                </div>
-                                            ))
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* 오른쪽: 그래프 및 데이터 */}
-                        <div className="flex flex-col gap-4 md:gap-6">
-                            
-                            {/* 그래프 카드 (Chart.js) */}
-                            <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 flex-1 min-h-[350px] md:min-h-[400px] flex flex-col">
-                                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                                    <h2 className="text-lg md:text-xl font-semibold flex items-center gap-2">
-                                        <span className={`w-2 h-6 rounded-sm ${graphMode === 'default' ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                                        {graphMode === 'default' ? '결과 그래프 (전체 길이 vs 개수)' : '결과 그래프 (늘어난 길이 vs 힘)'}
-                                    </h2>
-                                    <button 
-                                        onClick={toggleGraphMode}
-                                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors border border-slate-200"
-                                    >
-                                        <BarChartIcon size={14} />
-                                        {graphMode === 'default' ? '탄성력(N) 그래프 보기' : '기본 그래프 보기'}
-                                    </button>
-                                </div>
-
-                                <div className="w-full flex-grow min-h-[250px] md:min-h-[350px] relative">
-                                    <canvas ref={chartRef}></canvas>
-                                </div>
-                                
-                                <div className={`mt-4 p-3 rounded-lg text-xs md:text-sm flex items-start gap-2 ${graphMode === 'default' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-                                    <InfoIcon size={16} className="mt-0.5 shrink-0" />
-                                    {graphMode === 'default' ? (
-                                        <p><strong>전체 길이</strong>(x축)가 길어질수록 매달린 <strong>추의 개수</strong>(y축)도 비례하여 증가합니다.</p>
-                                    ) : (
-                                        <p><strong>늘어난 길이</strong>(x축)가 증가함에 따라 작용하는 <strong>탄성력</strong>(y축)이 비례하여 커집니다. (기울기 = k)</p>
-                                    )}
-                                </div>
-
-                                <div className="mt-4 md:mt-6 pt-4 border-t border-slate-100 hidden md:block">
-                                    <h3 className="text-md font-bold text-slate-700 mb-3 text-center">💡 훅의 법칙 공식</h3>
-                                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
-                                        <div className="text-2xl font-serif font-bold text-blue-800 mb-2">
-                                            F = -kx
-                                        </div>
-                                        <div className="text-xs text-slate-500 mt-2">
-                                            <span className="inline-block bg-white px-2 py-1 rounded border border-slate-200 shadow-sm text-red-500 font-bold mr-1">-</span>
-                                            부호의 의미: 변위(늘어난 방향)와 반대 방향으로 작용하는 <strong>복원력</strong>
-                                        </div>
-                                        <div className="flex justify-center gap-4 text-xs text-slate-500 mt-3">
-                                            <span>F: 탄성력(복원력)</span>
-                                            <span>k: 용수철 상수</span>
-                                            <span>x: 늘어난 길이</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* 데이터 테이블 */}
-                            <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
-                                <h2 className="text-lg md:text-xl font-semibold mb-4 flex items-center gap-2">
-                                    <span className="w-2 h-6 bg-purple-500 rounded-sm"></span>
-                                    측정 데이터
-                                </h2>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm text-left">
-                                        <thead className="text-xs text-slate-500 uppercase bg-slate-50">
-                                            <tr>
-                                                <th className="px-3 md:px-4 py-2 md:py-3 rounded-l-lg whitespace-nowrap">항목</th>
-                                                <th className="px-3 md:px-4 py-2 md:py-3 rounded-r-lg text-right whitespace-nowrap">값</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-slate-100">
-                                            <tr>
-                                                <td className="px-3 md:px-4 py-2 md:py-3 font-medium text-slate-700">추의 개수</td>
-                                                <td className="px-3 md:px-4 py-2 md:py-3 text-right font-mono text-blue-600">{weightCount} 개</td>
-                                            </tr>
-                                            <tr>
-                                                <td className="px-3 md:px-4 py-2 md:py-3 font-medium text-slate-700">
-                                                    작용하는 힘 (탄성력)
-                                                </td>
-                                                <td className="px-3 md:px-4 py-2 md:py-3 text-right font-mono font-bold text-slate-800">
-                                                    {(weightCount * N_PER_WEIGHT).toFixed(2)} N
-                                                </td>
-                                            </tr>
-                                            <tr className={graphMode === 'default' ? "bg-blue-50/50" : ""}>
-                                                <td className={`px-3 md:px-4 py-2 md:py-3 font-medium ${graphMode === 'default' ? 'text-blue-800 font-bold' : 'text-slate-700'}`}>전체 길이</td>
-                                                <td className={`px-3 md:px-4 py-2 md:py-3 text-right font-mono ${graphMode === 'default' ? 'text-blue-700 font-bold' : 'text-slate-600'}`}>{currentLength} cm</td>
-                                            </tr>
-                                            <tr className={graphMode === 'force' ? "bg-red-50/50" : ""}>
-                                                <td className={`px-3 md:px-4 py-2 md:py-3 font-medium ${graphMode === 'force' ? 'text-red-600 font-bold' : 'text-slate-700'}`}>늘어난 길이 (변위 x)</td>
-                                                <td className={`px-3 md:px-4 py-2 md:py-3 text-right font-mono ${graphMode === 'force' ? 'text-red-500 font-bold text-lg' : 'text-red-500'}`}>+{currentLength - BASE_LENGTH} cm</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <footer className="mt-8 mb-4 text-center text-slate-400 text-xs md:text-sm font-medium flex-none">
-                        ⓒ 2025. 송쌤과학 All rights reserved.
-                    </footer>
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<HookesLawExperiment />);
-    </script>
+</script>
 </body>
 </html>
