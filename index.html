@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
-<meta name="version" content="2.0">
-<meta name="description" content="스탠드에 매단 용수철에 100 g 추를 하나씩 걸어 자로 길이를 재고, 기록표와 그래프로 추의 무게와 늘어난 길이의 관계를 찾는 중학교 과학 가상실험실 (훅의 법칙 · 탄성력)">
+<meta name="version" content="2.1">
+<meta name="description" content="스탠드에 매단 용수철을 추로 걸거나 힘 센서로 당겨 늘어난 길이와 탄성력을 재고, 기록표와 그래프로 탄성력이 늘어난 길이에 비례함을 찾는 중학교 과학 가상실험실">
 <meta property="og:title" content="송쌤과학 가상실험실 | 용수철 탄성력 실험">
-<meta property="og:description" content="추를 하나씩 걸 때마다 용수철은 얼마나 늘어날까요? 직접 재고 그래프로 확인해요">
+<meta property="og:description" content="추를 걸거나 힘 센서로 당겨 용수철을 늘여 봐요 — 늘어난 길이와 탄성력은 어떤 관계일까요?">
 <meta property="og:type" content="website">
 <meta name="theme-color" id="metaTheme" content="#101b28">
 <title>송쌤과학 가상실험실 | 용수철 탄성력 실험</title>
@@ -204,6 +204,9 @@ dialog::backdrop{background:var(--scrim)}
 .tcard .def{font:700 15px/1.6 var(--font-ui);margin-bottom:6px}
 .tcard p{font-size:15px;line-height:1.7;color:var(--text-1)}
 .tcard p+p{margin-top:6px}
+.tcard .tb-list{margin:4px 0 0;padding:0 0 0 18px;display:grid;gap:5px}
+.tcard .tb-list li{font-size:14px;line-height:1.6;color:var(--text-1)}
+.tcard .tb-list b{font-weight:800}
 .tcard .link{margin-top:10px;padding:10px 12px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 var(--r-1) var(--r-1) 0;font-size:15px;line-height:1.65}
 .toast{position:fixed;left:50%;bottom:calc(20px + var(--strip-h) + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:10px;max-width:min(360px,calc(100vw - 24px));padding:10px 14px;border-radius:var(--r-2);background:var(--surface-1);border:1px solid var(--line-2);box-shadow:var(--edge-hi),var(--shadow-2);font:500 13px/1.5 var(--font-ui);color:var(--text-1)}
 .toast.error{border-color:var(--danger)}
@@ -277,6 +280,14 @@ dialog::backdrop{background:var(--scrim)}
 .w-lbl{fill:var(--brass-lo);font-size:var(--t12);font-weight:800;text-anchor:middle;dominant-baseline:central}
 :root[data-theme="dark"] .w-lbl{fill:#3b2a05}
 .w-hit{fill:transparent;cursor:pointer}
+.ctl-row[hidden]{display:none}
+.sensor{fill:var(--sensor,#e8edf2);stroke:var(--hookc);stroke-width:.8}
+.sensor-lcd{fill:#0f2a1f}
+.sensor-t{fill:#7ef0b0;font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;text-anchor:end;dominant-baseline:central}
+.sensor-u{fill:#44596b;font:700 5.5px var(--font-ui);text-anchor:middle;dominant-baseline:central}
+.sensor-btn{fill:var(--read)}
+.sensor-grip{fill:var(--hookc)}
+.sensor-g:hover .sensor{stroke:var(--accent)}
 .w-tray-hit{fill:transparent;cursor:grab}
 .tray{fill:var(--tray);stroke:var(--tray-edge);stroke-width:.8}
 .tray-t{fill:var(--text-2);font-size:var(--t12);font-weight:600;text-anchor:middle}
@@ -436,6 +447,13 @@ table.rec tr.fresh td{animation:fresh .9s var(--ease-out)}
         </div>
       </div>
       <div class="ctl-row">
+        <span class="lbl" id="lHow">재는 방법</span>
+        <div class="seg" id="howSeg" role="group" aria-labelledby="lHow">
+          <button data-h="w" aria-pressed="true">추 걸기</button>
+          <button data-h="p" aria-pressed="false">힘 센서로 당기기</button>
+        </div>
+      </div>
+      <div class="ctl-row" id="rowW">
         <span class="lbl" id="lW">추 <span class="lbl-note">한 개 100 g · 무게 0.98 N</span></span>
         <div class="stepper" role="group" aria-labelledby="lW">
           <button class="icon-btn sm" id="wMinus" aria-label="추 하나 내리기 (−)" title="추 하나 내리기 (−)"></button>
@@ -443,10 +461,18 @@ table.rec tr.fresh td{animation:fresh .9s var(--ease-out)}
           <button class="icon-btn sm" id="wPlus" aria-label="추 하나 걸기 (+)" title="추 하나 걸기 (+)"></button>
         </div>
       </div>
+      <div class="ctl-row" id="rowP" hidden>
+        <span class="lbl" id="lP">늘어난 길이 <span class="lbl-note">센서를 끌거나 1 cm씩</span></span>
+        <div class="stepper" role="group" aria-labelledby="lP">
+          <button class="icon-btn sm" id="pMinus" aria-label="1 cm 덜 당기기 (−)" title="1 cm 덜 당기기 (−)"></button>
+          <output class="wcount num" id="pCount" aria-live="polite">0 cm</output>
+          <button class="icon-btn sm" id="pPlus" aria-label="1 cm 더 당기기 (+)" title="1 cm 더 당기기 (+)"></button>
+        </div>
+      </div>
       <div class="meter" aria-live="polite">
         <div class="m"><span class="lbl">용수철 길이(자 눈금)</span><span class="readout"><span class="v num" id="mLen">10.0</span><span class="u">cm</span></span></div>
         <div class="m"><span class="lbl">늘어난 길이</span><span class="readout"><span class="v num" id="mExt">0.0</span><span class="u">cm</span></span></div>
-        <div class="m"><span class="lbl">추의 무게</span><span class="readout"><span class="v num" id="mW">0</span><span class="u">N</span></span></div>
+        <div class="m"><span class="lbl" id="mWL">추의 무게</span><span class="readout"><span class="v num" id="mW">0</span><span class="u">N</span></span></div>
       </div>
       <div class="rec-row">
         <button class="btn primary grow" id="recBtn"></button>
@@ -458,7 +484,7 @@ table.rec tr.fresh td{animation:fresh .9s var(--ease-out)}
         <div class="sub-head"><h3 class="cap">기록표</h3><button class="btn small ghost" id="undoBtn"></button></div>
         <div class="tbl-scroll scroll">
           <table class="rec" id="recTable">
-            <thead><tr><th scope="col">용수철</th><th scope="col">추</th><th scope="col">무게(N)</th><th scope="col">길이(cm)</th><th scope="col">늘어난 길이(cm)</th></tr></thead>
+            <thead><tr><th scope="col">용수철</th><th scope="col">추·센서</th><th scope="col">무게=탄성력(N)</th><th scope="col">길이(cm)</th><th scope="col">늘어난 길이(cm)</th></tr></thead>
             <tbody id="recBody"></tbody>
           </table>
         </div>
@@ -467,11 +493,12 @@ table.rec tr.fresh td{animation:fresh .9s var(--ease-out)}
         <div class="sub-head">
           <h3 class="cap">그래프</h3>
           <div class="seg small" id="ySeg" role="group" aria-label="세로축 고르기">
-            <button data-y="ext" aria-pressed="true">늘어난 길이</button>
+            <button data-y="fx" aria-pressed="true">탄성력</button>
+            <button data-y="ext" aria-pressed="false">늘어난 길이</button>
             <button data-y="len" aria-pressed="false">용수철 길이</button>
           </div>
         </div>
-        <svg id="graph" viewBox="0 0 360 250" role="img" aria-label="추의 무게와 용수철이 늘어난 길이의 그래프"></svg>
+        <svg id="graph" viewBox="0 0 360 250" role="img" aria-label="용수철이 늘어난 길이와 탄성력의 그래프"></svg>
         <p class="find note-slot" id="find"></p>
       </div>
     </div>
@@ -792,7 +819,7 @@ const SS = (() => {
 
 /* ═══════ 이 실험실 ═══════ */
 /* ───────── 용수철 탄성력 실험 — 추를 걸고 자로 재어 기록표·그래프로 ───────── */
-const APP_VERSION = '2.0', APP_DATE = '2026-10-01';
+const APP_VERSION = '2.1', APP_DATE = '2026-10-01';
 const { $, $$, el, icon, toast, announce, store } = SS;
 
 /* ── 과학 진실층 ── */
@@ -810,10 +837,12 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const f1 = v => (Math.round(v * 10) / 10).toFixed(1), f2 = v => v.toFixed(2);
 
 /* ── 상태 ── */
-let S = Object.assign({ sp: 'A', n: 0, yMode: 'ext' }, store.get('ui', {}));
+let S = Object.assign({ sp: 'A', n: 0, yMode: 'fx', how: 'w', pull: 0 }, store.get('ui', {}));   // how: w 추 걸기 · p 힘 센서로 당기기(세 교과서의 본 탐구)   // fx: 교과서 그래프(가로 늘어난 길이 · 세로 탄성력)
 let recs = store.get('recs', []);
 const dyn = { y: 0, v: 0 };            // 늘어난 길이(m) · 속도
-function eqY() { return S.n * W_N / SPRINGS[S.sp].k; }
+function eqY() { return S.how === 'p' ? S.pull / 100 : S.n * W_N / SPRINGS[S.sp].k; }
+const pullMax = () => Math.floor(NMAX * W_N / SPRINGS[S.sp].k * 100 * 2) / 2;   // 센서로 당기는 길이 상한(cm) — 추 5개와 같은 힘(4.9 N)까지, 탄성 한계 안
+const forceNow = () => SPRINGS[S.sp].k * dyn.y;                      // 지금 탄성력(N)
 dyn.y = eqY();
 const settled = () => Math.abs(dyn.y - eqY()) < 3e-4 && Math.abs(dyn.v) < 3e-3;
 function save() { store.set('ui', S); store.set('recs', recs); }
@@ -901,7 +930,8 @@ function render() {
   el('path', { d: `M${X_AX - P.R} ${c1}L${X_AX} ${yb - 4}V${yb - 1}a3.5 3.5 0 1 1 -3.5 3.5`, class: 'sp-front', 'stroke-width': P.wire }, gs);
   // 매단 추
   const gh = $('#gHang'); gh.innerHTML = '';
-  for (let i = 0; i < S.n; i++) {
+  if (S.how === 'p') drawSensor(gh, yb);
+  else for (let i = 0; i < S.n; i++) {
     const g = weightG(gh, X_AX, yb + i * PITCH);
     if (i === S.n - 1) { const h = el('rect', { x: X_AX - 16, y: yb + i * PITCH, width: 32, height: 36, class: 'w-hit', 'data-noexport': '' }, g); h.dataset.hang = '1'; }
   }
@@ -912,13 +942,20 @@ function render() {
   // 상자 속 남은 추
   const gt = $('#gTray'); $$('.tray-w', gt).forEach(e => e.remove());
   const slots = [[214, 464], [244, 464], [214, 428], [244, 428], [214, 392]];
-  for (let i = 0; i < NMAX - S.n; i++) {
+  gt.style.display = S.how === 'p' ? 'none' : '';
+  for (let i = 0; i < (S.how === 'p' ? 0 : NMAX - S.n); i++) {
     const [x, y] = slots[i], g = weightG(gt, x, y, { class: 'tray-w' });
     const h = el('rect', { x: x - 15, y: y - 2, width: 30, height: 34, class: 'w-tray-hit', 'data-noexport': '' }, g); h.dataset.tray = '1';
   }
   // 힘 화살표: 추에 작용하는 두 힘 — 탄성력(위, 고리에서) · 무게(아래, 추 가운데에서)
   const gf = $('#gForces'); gf.innerHTML = '';
-  if (S.n > 0) {
+  if (S.how === 'p' && dyn.y > 1e-4) {
+    const Fel = P.k * dyn.y;
+    arrow(gf, 'fa-up', X_AX + 22, yb, -Fel * FA, pxu < 1 ? `${f2(Fel)} N` : `탄성력 ${f2(Fel)} N`, 'start');
+    arrow(gf, 'fa-dn', X_AX + 22, yb + 66, Fel * FA, pxu < 1 ? `${f2(Fel)} N` : `당기는 힘 ${f2(Fel)} N`, 'start');
+    el('line', { x1: X_AX + 13, y1: yb, x2: X_AX + 22, y2: yb, class: 'hook', style: 'stroke-dasharray:1.5 1.5' }, gf);
+  }
+  if (S.how === 'w' && S.n > 0) {
     const Fel = P.k * dyn.y, Wt = S.n * W_N;
     arrow(gf, 'fa-up', X_AX + 22, yb, -Fel * FA, pxu < 1 ? `${f2(Fel)} N` : `탄성력 ${f2(Fel)} N`, 'start');
     const cy = yb + S.n * PITCH / 2;
@@ -928,6 +965,18 @@ function render() {
   }
   renderLoupe(yb);
   syncPanel();
+}
+function drawSensor(g, yb) {                           // 디지털 힘 센서(용수철저울): 고리에 걸고 아래로 당긴다
+  const F = forceNow(), x = X_AX;
+  el('path', { d: `M${x} ${yb + 3}V${yb + 12}`, class: 'hook' }, g);
+  const s = el('g', { class: 'sensor-g', 'data-pull': '1' }, g);
+  el('rect', { x: x - 16, y: yb + 12, width: 32, height: 46, rx: 5, class: 'sensor' }, s);
+  el('rect', { x: x - 12, y: yb + 18, width: 24, height: 14, rx: 2, class: 'sensor-lcd' }, s);
+  el('text', { x: x + 10.5, y: yb + 25.5, class: 'sensor-t' }, s).textContent = f2(F);
+  el('text', { x: x, y: yb + 40, class: 'sensor-u' }, s).textContent = 'N · 힘 센서';
+  el('circle', { cx: x - 7, cy: yb + 50, r: 2.4, class: 'sensor-btn' }, s);
+  el('rect', { x: x - 10, y: yb + 58, width: 20, height: 10, rx: 4, class: 'sensor-grip' }, s);
+  el('rect', { x: x - 26, y: yb + 6, width: 52, height: 68, class: 'w-hit', 'data-noexport': '', 'data-pull': '1', style: 'cursor:ns-resize' }, s);
 }
 function arrow(g, cls, x, y, dy, label, anchor) {
   const gg = el('g', { class: cls }, g), hd = Math.min(7, Math.abs(dy) * .45), s = Math.sign(dy) || 1;
@@ -955,52 +1004,64 @@ function renderLoupe(yb) {                             // 지침 둘레의 자�
 /* ═════════ 측정 칸 ═════════ */
 function syncPanel() {
   const P = SPRINGS[S.sp], ok = settled();
+  const pm = S.how === 'p';
+  $('#rowW').hidden = pm; $('#rowP').hidden = !pm;
+  $$('#howSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.h === S.how)));
+  $('#pCount').textContent = `${f1(S.pull)} cm`; $('#pMinus').disabled = S.pull <= 0; $('#pPlus').disabled = S.pull >= pullMax();
+  $('#mWL').textContent = pm ? '힘 센서 값(탄성력)' : '추의 무게';
   $('#wCount').textContent = `${S.n}개`;
   $('#wMinus').disabled = S.n <= 0; $('#wPlus').disabled = S.n >= NMAX;
   $('#mLen').textContent = f1(ok ? readCm() : lenMM() / 10);
   $('#mExt').textContent = f1(ok ? readCm() - P.L0 / 10 : dyn.y * 100);
-  $('#mW').textContent = f2(S.n * W_N);
+  $('#mW').textContent = f2(pm ? forceNow() : S.n * W_N);
   const rb = $('#recBtn');
   rb.setAttribute('aria-disabled', String(!ok));
-  $('#recHint').textContent = ok ? (recs.some(r => r.s === S.sp && r.n === S.n) ? '이미 기록한 조건이에요. 다시 기록하면 바뀌어요.' : '용수철이 멈췄어요. 눈금을 읽어 기록해요.') : '용수철이 멈추면 기록할 수 있어요.';
+  $('#recHint').textContent = ok ? (recs.some(r => recKey(r) === curKey()) ? '이미 기록한 조건이에요. 다시 기록하면 바뀌어요.' : pm ? '센서 값과 자의 눈금을 읽어 기록해요.' : '용수철이 멈췄어요. 눈금을 읽어 기록해요.') : '용수철이 멈추면 기록할 수 있어요.';
   rb.title = ok ? '지금 눈금을 기록표에 적어요' : '용수철이 멈추면 기록할 수 있어요';
   $$('#springSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.s === S.sp)));
   $$('#ySeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.y === S.yMode)));
 }
+const recKey = r => r.p != null ? `${r.s}-p${r.p}` : `${r.s}-${r.n}`;
+const curKey = () => S.how === 'p' ? `${S.sp}-p${S.pull}` : `${S.sp}-${S.n}`;
 function renderTable(freshKey) {
-  const rows = [...recs].sort((a, b) => a.s.localeCompare(b.s) || a.n - b.n);
-  $('#recBody').innerHTML = rows.length ? rows.map(r => `<tr class="${`${r.s}-${r.n}` === freshKey ? 'fresh' : ''}"><td><span class="mk ${r.s}" aria-hidden="true"></span>${r.s}</td><td>${r.n}개</td><td>${f2(r.W)}</td><td>${f1(r.L)}</td><td class="ext">${f1(r.ext)}</td></tr>`).join('')
-    : `<tr class="empty-row"><td colspan="5">추를 걸고 용수철이 멈추면 <b>기록하기</b>를 눌러요. 추 0개(처음 길이)도 기록해요.</td></tr>`;
+  const rows = [...recs].sort((a, b) => a.s.localeCompare(b.s) || a.ext - b.ext);
+  $('#recBody').innerHTML = rows.length ? rows.map(r => `<tr class="${recKey(r) === freshKey ? 'fresh' : ''}"><td><span class="mk ${r.s}" aria-hidden="true"></span>${r.s}</td><td>${r.p != null ? '센서' : `${r.n}개`}</td><td>${f2(r.W)}</td><td>${f1(r.L)}</td><td class="ext">${f1(r.ext)}</td></tr>`).join('')
+    : `<tr class="empty-row"><td colspan="5">${S.how === 'p' ? '센서로 용수철을 늘이고 <b>기록하기</b>를 눌러요. 0 cm(처음 길이)부터 3 cm씩 늘여 보세요.' : '추를 걸고 용수철이 멈추면 <b>기록하기</b>를 눌러요. 추 0개(처음 길이)도 기록해요.'}</td></tr>`;
   $('#undoBtn').disabled = !recs.length;
 }
 function fitK(pts) { const sxy = pts.reduce((a, p) => a + p[0] * p[1], 0), sxx = pts.reduce((a, p) => a + p[0] * p[0], 0); return sxx ? sxy / sxx : 0; }
 function renderGraph() {
   const g = $('#graph'); g.innerHTML = '';
-  const X0 = 46, X1 = 346, Y0 = 214, Y1 = 14, ext = S.yMode === 'ext', yMax = ext ? 12 : 22, yStep = ext ? 2 : 5;
-  const xs = w => X0 + w / 5 * (X1 - X0), ys = v => Y0 - v / yMax * (Y0 - Y1);
+  const X0 = 46, X1 = 346, Y0 = 214, Y1 = 28, fx = S.yMode === 'fx', ext = S.yMode === 'ext';
+  // fx: 가로 = 늘어난 길이(cm), 세로 = 탄성력(N) — 세 교과서의 그래프와 같은 축. 그 밖: 가로 = 추의 무게(N)
+  const xMax = fx ? 12 : 5, xStep = fx ? 2 : 1, yMax = fx ? 5 : ext ? 12 : 22, yStep = fx ? 1 : ext ? 2 : 5;
+  const xs = w => X0 + w / xMax * (X1 - X0), ys = v => Y0 - v / yMax * (Y0 - Y1);
   for (let v = 0; v <= yMax; v += yStep) { el('line', { x1: X0, y1: ys(v), x2: X1, y2: ys(v), class: 'g-grid' }, g); el('text', { x: X0 - 8, y: ys(v) + 4, class: 'g-t', 'text-anchor': 'end' }, g).textContent = v; }
-  for (let w = 0; w <= 5; w++) el('text', { x: xs(w), y: Y0 + 17, class: 'g-t', 'text-anchor': 'middle' }, g).textContent = w;
+  for (let w = 0; w <= xMax; w += xStep) el('text', { x: xs(w), y: Y0 + 17, class: 'g-t', 'text-anchor': 'middle' }, g).textContent = w;
   el('line', { x1: X0, y1: Y0, x2: X1, y2: Y0, class: 'g-axis' }, g); el('line', { x1: X0, y1: Y0, x2: X0, y2: Y1 - 4, class: 'g-axis' }, g);
-  el('text', { x: X1, y: Y0 + 33, class: 'g-title', 'text-anchor': 'end' }, g).textContent = '추의 무게 (N)';
-  el('text', { x: 6, y: 10, class: 'g-title' }, g).textContent = ext ? '늘어난 길이 (cm)' : '용수철 길이 (cm)';
+  el('text', { x: X1, y: Y0 + 33, class: 'g-title', 'text-anchor': 'end' }, g).textContent = fx ? '용수철이 늘어난 길이 (cm)' : '추의 무게 (N)';
+  el('text', { x: 6, y: 10, class: 'g-title' }, g).textContent = fx ? '탄성력 (N)' : ext ? '늘어난 길이 (cm)' : '용수철 길이 (cm)';
   const lines = [];
   for (const s of ['A', 'B']) {
-    const pts = recs.filter(r => r.s === s).sort((a, b) => a.n - b.n).map(r => [r.W, ext ? r.ext : r.L]);
+    const pts = recs.filter(r => r.s === s).sort((a, b) => a.ext - b.ext).map(r => fx ? [r.ext, r.W] : [r.W, ext ? r.ext : r.L]);
     if (pts.length >= 2) {
-      if (ext) { const k = fitK(pts), wEnd = Math.min(5, yMax / (k || 1)); el('line', { x1: xs(0), y1: ys(0), x2: xs(wEnd), y2: ys(k * wEnd), class: s === 'A' ? 'g-la' : 'g-lb' }, g); lines.push([s, wEnd, k * wEnd]); }
+      if (fx || ext) { const k = fitK(pts), wEnd = Math.min(xMax, yMax / (k || 1)); el('line', { x1: xs(0), y1: ys(0), x2: xs(wEnd), y2: ys(k * wEnd), class: s === 'A' ? 'g-la' : 'g-lb' }, g); lines.push([s, wEnd, k * wEnd]); }
       else { const n = pts.length, mx = pts.reduce((a, p) => a + p[0], 0) / n, my = pts.reduce((a, p) => a + p[1], 0) / n, sl = pts.reduce((a, p) => a + (p[0] - mx) * (p[1] - my), 0) / (pts.reduce((a, p) => a + (p[0] - mx) ** 2, 0) || 1), b0 = my - sl * mx, wEnd = Math.min(5, (yMax - b0) / (sl || 1)); el('line', { x1: xs(0), y1: ys(b0), x2: xs(wEnd), y2: ys(b0 + sl * wEnd), class: s === 'A' ? 'g-la' : 'g-lb' }, g); lines.push([s, wEnd, b0 + sl * wEnd]); }
     }
     pts.forEach(([w, v]) => s === 'A' ? el('circle', { cx: xs(w), cy: ys(v), r: 5, class: 'g-a' }, g) : el('rect', { x: xs(w) - 4.5, y: ys(v) - 4.5, width: 9, height: 9, class: 'g-b' }, g));
   }
   lines.forEach(([s, w, v]) => el('text', { x: xs(w) + 6, y: ys(v) + 4, class: 'g-lab', style: `fill:var(--data-${s.toLowerCase()})` }, g).textContent = s);
-  if (settled()) { const P = SPRINGS[S.sp], v = ext ? readCm() - P.L0 / 10 : readCm(); el('circle', { cx: xs(S.n * W_N), cy: ys(v), r: 8, class: 'g-now' }, g); }
+  if (settled()) { const P = SPRINGS[S.sp], e = readCm() - P.L0 / 10, w = S.how === 'p' ? forceNow() : S.n * W_N; el('circle', { cx: xs(fx ? e : w), cy: ys(fx ? w : ext ? e : readCm()), r: 8, class: 'g-now' }, g); }
   // 찾은 것(기록에서 계산)
-  const f = $('#find'), per = s => { const pts = recs.filter(r => r.s === s && r.n > 0).map(r => [r.W, r.ext]); return pts.length >= 2 ? fitK(pts) * W_N : null; };
+  const f = $('#find'), per = s => { const pts = recs.filter(r => r.s === s && r.ext > 0).map(r => [r.W, r.ext]); return pts.length >= 2 ? fitK(pts) * W_N : null; };
   const a = per('A'), b = per('B'), nA = recs.filter(r => r.s === 'A').length, nB = recs.filter(r => r.s === 'B').length;
-  if (!ext && (nA >= 2 || nB >= 2)) f.textContent = '용수철 길이는 처음부터 있어서 그래프가 0에서 시작하지 않아요. ‘늘어난 길이’로 바꿔 보세요.';
+  const perCm = v => f2(W_N / v);   // 1 cm 늘어날 때 탄성력
+  if (!fx && !ext && (nA >= 2 || nB >= 2)) f.textContent = '용수철 길이는 처음부터 있어서 그래프가 0에서 시작하지 않아요. ‘탄성력’이나 ‘늘어난 길이’로 바꿔 보세요.';
+  else if (fx && a != null && b != null) f.textContent = `1 cm 늘어날 때마다 탄성력이 A는 ${perCm(a)} N, B는 ${perCm(b)} N씩 커졌어요. 늘어난 길이가 2배, 3배가 되면 탄성력도 2배, 3배예요.`;
+  else if (fx && (a != null || b != null)) f.textContent = `${a != null ? 'A' : 'B'}는 1 cm 늘어날 때마다 탄성력이 ${perCm(a ?? b)} N씩 커졌어요.${nA + nB >= 3 ? ' 다른 용수철로도 재어 볼까요?' : ''}`;
   else if (a != null && b != null) f.textContent = `추 한 개(0.98 N)마다 A는 ${f1(a)} cm, B는 ${f1(b)} cm씩 늘어났어요. 같은 힘에 B가 덜 늘어나요.`;
   else if (a != null || b != null) f.textContent = `추 한 개(0.98 N)마다 ${a != null ? 'A' : 'B'}가 ${f1(a ?? b)} cm씩 늘어났어요.${nA + nB >= 3 ? ` 다른 용수철로도 재어 볼까요?` : ''}`;
-  else f.textContent = '추를 하나씩 걸고 기록해 점을 3개 이상 찍어 보세요.';
+  else f.textContent = S.how === 'p' ? '용수철을 몇 cm씩 늘이며 기록해 점을 3개 이상 찍어 보세요.' : '추를 하나씩 걸고 기록해 점을 3개 이상 찍어 보세요.';
 }
 
 /* ═════════ 추 걸기 · 물리 ═════════ */
@@ -1011,21 +1072,26 @@ function setN(n, how) {
 }
 function setSpring(sp) {
   if (sp === S.sp) return;
-  S.sp = sp; S.n = 0; dyn.y = 0; dyn.v = 0; save(); render(); renderGraph();
+  S.sp = sp; S.n = 0; S.pull = 0; dyn.y = 0; dyn.v = 0; save(); render(); renderGraph();
   announce(`${SPRINGS[sp].name}로 바꿨어요. 추를 모두 내렸어요.`);
 }
 function record() {
   if (!settled()) { toast('용수철이 멈추면 기록할 수 있어요.'); return; }
-  const P = SPRINGS[S.sp], L = readCm(), key = `${S.sp}-${S.n}`;
-  recs = recs.filter(r => `${r.s}-${r.n}` !== key);
-  recs.push({ s: S.sp, n: S.n, W: +(S.n * W_N).toFixed(2), L, ext: +(L - P.L0 / 10).toFixed(1) });
+  const P = SPRINGS[S.sp], L = readCm(), key = curKey();
+  recs = recs.filter(r => recKey(r) !== key);
+  if (S.how === 'p') recs.push({ s: S.sp, n: null, p: S.pull, W: +forceNow().toFixed(2), L, ext: +(L - P.L0 / 10).toFixed(1) });
+  else recs.push({ s: S.sp, n: S.n, W: +(S.n * W_N).toFixed(2), L, ext: +(L - P.L0 / 10).toFixed(1) });
   save(); renderTable(key); renderGraph(); syncPanel();
-  announce(`${S.sp} 용수철, 추 ${S.n}개: 길이 ${f1(L)} 센티미터 기록`);
+  announce(S.how === 'p' ? `${S.sp} 용수철, ${f1(S.pull)} 센티미터 늘였을 때 ${f2(forceNow())} 뉴턴 기록` : `${S.sp} 용수철, 추 ${S.n}개: 길이 ${f1(L)} 센티미터 기록`);
 }
 let wasSettled = true;
 function step(dt) {
   const P = SPRINGS[S.sp], m = S.n * W_MASS + M_SPRING, yEq = eqY();
-  if (!settled()) {
+  if (S.how === 'p' && !settled()) {                    // 손으로 잡고 당기므로 출렁이지 않고 따라간다
+    dyn.v = 0; dyn.y += (yEq - dyn.y) * (1 - Math.exp(-dt / .07));
+    if (Math.abs(dyn.y - yEq) < 2e-4) dyn.y = yEq;
+    render();
+  } else if (!settled()) {
     const b = 2 * ZETA * Math.sqrt(P.k * m), n = Math.max(1, Math.ceil(dt * 600)), h = dt / n;
     for (let i = 0; i < n; i++) { const a = (S.n * W_N - P.k * dyn.y - b * dyn.v) / m; dyn.v += a * h; dyn.y += dyn.v * h; }
     if (settled()) { dyn.y = yEq; dyn.v = 0; }
@@ -1036,7 +1102,19 @@ function step(dt) {
 
 /* ── 끌기·누르기: 상자의 추 → 고리, 맨 아래 추 → 상자 ── */
 let drag = null;
+function setPull(cm) {
+  cm = clamp(Math.round(cm * 2) / 2, 0, pullMax()); if (cm === S.pull) return;
+  S.pull = cm; save(); render(); renderGraph();
+}
+function setHow(h) {
+  if (h === S.how) return;
+  S.how = h; S.n = 0; S.pull = 0; dyn.v = 0; save(); render(); renderGraph(); renderTable();
+  announce(h === 'p' ? '힘 센서를 걸었어요. 센서를 아래로 끌어 용수철을 늘여요.' : '추 걸기로 바꿨어요.');
+}
+let pullDrag = null;
 svg.addEventListener('pointerdown', e => {
+  const q = e.target.closest('[data-pull]');
+  if (q && S.how === 'p') { e.preventDefault(); pullDrag = { id: e.pointerId }; svg.setPointerCapture(e.pointerId); return; }
   const t = e.target.closest('[data-tray],[data-hang]'); if (!t) return;
   e.preventDefault();
   const from = t.dataset.tray ? 'tray' : 'hang';
@@ -1045,6 +1123,7 @@ svg.addEventListener('pointerdown', e => {
   svg.setPointerCapture(e.pointerId);
 });
 svg.addEventListener('pointermove', e => {
+  if (pullDrag) { const p = SS.svgPoint(svg, e.clientX, e.clientY); setPull((p.y - 35 - Y_ZERO - SPRINGS[S.sp].L0) / 10); return; }
   if (!drag) return;
   if (!drag.moved && Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) > 5) {
     drag.moved = true;
@@ -1060,6 +1139,7 @@ svg.addEventListener('pointermove', e => {
   }
 });
 function endDrag() {
+  if (pullDrag) { pullDrag = null; announce(`${f1(S.pull)} 센티미터 늘였어요`); return; }
   if (!drag) return;
   $('#gDrag').innerHTML = '';
   const d = drag; drag = null;
@@ -1073,47 +1153,64 @@ svg.addEventListener('pointerup', endDrag); svg.addEventListener('pointercancel'
 /* ═════════ 원리 카드 · 도움말 ═════════ */
 function theory() {
   const a = recs.filter(r => r.s === 'A' && r.n > 0);
-  return `<article class="tcard"><h3>탄성력</h3>
-    <figure><svg viewBox="0 0 300 110" role="img" aria-label="늘어난 용수철은 원래대로 돌아가려고 반대 방향으로 힘을 낸다">
-      <rect width="300" height="110" style="fill:var(--stage)"/><rect x="10" y="20" width="10" height="70" style="fill:var(--rod-lo)"/>
-      <path d="M20 55h10${Array.from({ length: 9 }, (_, i) => `l8 ${i % 2 ? 12 : -12}`).join('')}l8 0h12" style="fill:none;stroke:var(--spring-front);stroke-width:2.5;stroke-linejoin:round"/>
-      <rect x="130" y="40" width="30" height="30" rx="3" style="fill:var(--brass)"/>
-      <line x1="160" y1="55" x2="240" y2="55" style="stroke:var(--force);stroke-width:4"/><path d="M252 55 238 47v16Z" style="fill:var(--force)"/>
-      <line x1="130" y1="80" x2="80" y2="80" style="stroke:var(--force-2);stroke-width:4"/><path d="M68 80 82 72v16Z" style="fill:var(--force-2)"/>
-      <text x="200" y="40" style="fill:var(--text-1);font:700 13px var(--font-ui);text-anchor:middle">당기는 힘</text>
-      <text x="100" y="102" style="fill:var(--text-1);font:700 13px var(--font-ui);text-anchor:middle">탄성력</text>
+  const coil = (n, w) => Array.from({ length: n }, (_, i) => `l${w} ${i % 2 ? 11 : -11}`).join('');   // 지그재그 용수철 조각
+  return `<article class="tcard"><h3>탄성력의 방향</h3>
+    <figure><svg viewBox="0 0 300 150" role="img" aria-label="용수철을 당기면 탄성력은 당긴 쪽과 반대로, 누르면 미는 쪽과 반대로 작용한다">
+      <rect width="300" height="150" style="fill:var(--stage)"/>
+      <rect x="10" y="14" width="10" height="50" style="fill:var(--rod-lo)"/><path d="M20 39h8${coil(11, 8)}l8 0" style="fill:none;stroke:var(--spring-front);stroke-width:2.4;stroke-linejoin:round"/>
+      <line x1="126" y1="32" x2="196" y2="32" style="stroke:var(--force);stroke-width:4"/><path d="M208 32 194 24v16Z" style="fill:var(--force)"/>
+      <line x1="126" y1="52" x2="76" y2="52" style="stroke:var(--force-2);stroke-width:4"/><path d="M64 52 78 44v16Z" style="fill:var(--force-2)"/>
+      <text x="214" y="36" style="fill:var(--text-1);font:700 12px var(--font-ui)">당기는 힘</text><text x="60" y="72" style="fill:var(--text-1);font:700 12px var(--font-ui)">탄성력</text>
+      <rect x="10" y="88" width="10" height="50" style="fill:var(--rod-lo)"/><path d="M20 113h6${coil(11, 4.5)}l6 0" style="fill:none;stroke:var(--spring-front);stroke-width:2.4;stroke-linejoin:round"/>
+      <line x1="150" y1="104" x2="92" y2="104" style="stroke:var(--force);stroke-width:4"/><path d="M80 104 94 96v16Z" style="fill:var(--force)"/>
+      <line x1="84" y1="126" x2="142" y2="126" style="stroke:var(--force-2);stroke-width:4"/><path d="M154 126 140 118v16Z" style="fill:var(--force-2)"/>
+      <text x="156" y="108" style="fill:var(--text-1);font:700 12px var(--font-ui)">미는 힘</text><text x="160" y="130" style="fill:var(--text-1);font:700 12px var(--font-ui)">탄성력</text>
+      <text x="292" y="62" style="fill:var(--text-2);font:600 11px var(--font-ui);text-anchor:end">당길 때</text><text x="292" y="136" style="fill:var(--text-2);font:600 11px var(--font-ui);text-anchor:end">누를 때</text>
     </svg></figure>
-    <p class="def">변형된 물체가 원래 모양으로 돌아가려는 힘을 탄성력이라고 해요.</p>
-    <p>탄성력은 물체를 변형시킨 힘과 반대 방향으로 작용해요. 용수철에 매단 추가 멈춰 있을 때는 위로 작용하는 탄성력과 아래로 작용하는 추의 무게가 크기는 같고 방향은 반대예요(힘의 평형).</p>
-    <p class="link">장면의 두 화살표를 보세요. 용수철이 출렁이는 동안에는 길이가 달라지다가, 멈추면 같은 길이가 돼요.</p></article>
-  <article class="tcard"><h3>늘어난 길이는 무게에 비례해요</h3>
-    <p class="def">용수철이 늘어난 길이는 매단 물체의 무게(용수철을 당기는 힘)에 비례해요.</p>
-    <p>그래서 ‘늘어난 길이’ 그래프는 원점을 지나는 직선이 돼요. 같은 힘에 덜 늘어나는 용수철은 기울기가 작아요. 용수철을 너무 많이 늘이면 원래대로 돌아오지 않으니(탄성 한계) 이 실험은 추 5개까지만 걸어요.</p>
-    <p class="link">${a.length >= 2 ? `기록한 A: ${a.map(r => `${f2(r.W)} N → ${f1(r.ext)} cm`).join(', ')}.` : '기록을 3개 이상 모은 뒤 그래프의 모양을 보세요.'}</p></article>
+    <p class="def">변형된 물체가 원래 모양으로 되돌아가려는 힘을 탄성력이라고 해요. 탄성력은 원래 모양으로 되돌아가려는 방향으로 작용해요.</p>
+    <p>변형된 물체가 원래 모양으로 되돌아가려는 성질은 탄성, 용수철·고무줄처럼 탄성이 있는 물체는 탄성체예요. 용수철을 당기면 탄성력은 당긴 쪽과 반대로, 누르면 미는 쪽과 반대로 작용해요.</p>
+    <p class="link">장면에서 추가 멈춰 있을 때 위로 작용하는 탄성력과 아래로 작용하는 추의 무게는 크기가 같고 방향이 반대예요(힘의 평형).</p></article>
+  <article class="tcard"><h3>늘어난 길이에 비례해요</h3>
+    <p class="def">탄성력의 크기는 용수철이 늘어난 길이에 비례해요. 늘어난 길이가 2배, 3배가 되면 탄성력도 2배, 3배가 돼요.</p>
+    <p>그래서 ‘탄성력’ 그래프는 원점을 지나는 직선이에요. 같은 길이를 늘이는 데 더 큰 힘이 드는 용수철은 기울기가 커요. 용수철을 너무 많이 늘이면 원래대로 돌아오지 않으니(탄성 한계) 이 실험은 추 5개까지만 걸어요. 이 성질로 용수철저울·가정용 저울을 만들어요.</p>
+    <p class="link">${a.length >= 2 ? `기록한 A: ${a.map(r => `${f1(r.ext)} cm → ${f2(r.W)} N`).join(', ')}.` : '기록을 3개 이상 모은 뒤 그래프의 모양을 보세요.'}</p></article>
+  <article class="tcard"><h3>생활 속 탄성력</h3>
+    <p class="def">탄성력은 변형된 정도가 클수록 커서, 우리 주변에서 다양하게 쓰여요.</p>
+    <p>장대높이뛰기 선수는 휜 장대의 탄성력으로, 양궁 선수는 활의 탄성력으로 화살을 멀리 보내요. 트램펄린·번지 점프, 눌렀다 다시 올라오는 컴퓨터 자판, 볼펜 속 용수철, 빨래집게, 머리끈도 탄성력을 이용해요.</p></article>
   <article class="tcard"><h3>질량과 무게는 달라요</h3>
-    <p class="def">질량(g, kg)은 물체의 양, 무게(N)는 지구가 물체를 당기는 힘의 크기예요.</p>
-    <p>지구에서 질량 1 kg인 물체의 무게는 약 9.8 N이에요. 그래서 100 g 추 한 개의 무게는 0.98 N이에요. 달에 가면 질량은 그대로지만 무게는 약 1/6로 줄어요.</p></article>`;
+    <p class="def">무게는 물체에 작용하는 중력의 크기(N), 질량은 장소가 달라져도 변하지 않는 물체의 고유한 양(g, kg)이에요.</p>
+    <p>지구에서 질량 1 kg인 물체의 무게는 약 9.8 N이라, 100 g 추 한 개의 무게는 0.98 N이에요(교과서 탐구에서는 계산하기 쉽게 약 1 N으로 어림하기도 해요). 달에서는 질량은 그대로이고 무게만 지구의 약 1/6이 돼요.</p></article>
+  <article class="tcard"><h3>교과서에서는</h3>
+    <p class="def">세 교과서 모두 용수철을 늘이며 탄성력을 재고, 늘어난 길이와 탄성력이 비례함을 그래프로 찾아요.</p>
+    <ul class="tb-list">
+      <li><b>천재</b> 160~163쪽 — 고무줄 위 컵 누르기, 디지털 용수철저울로 3 cm씩 늘이며 탄성력 측정</li>
+      <li><b>동아</b> 154~157쪽 — 고무 띠 당기기, 무선 힘 센서로 2~10 cm 늘이며 측정, ‘같은 원리 다른 탐구’로 추 걸기</li>
+      <li><b>비상</b> 166~169쪽 — 고무공 당기기, 힘 센서로 5~20 cm 늘이며 측정, ‘다르게 해 보기’로 추 걸기</li>
+    </ul>
+    <p class="link">이 실험실에서는 두 방법을 모두 해 볼 수 있어요. ‘힘 센서로 당기기’는 세 교과서의 본 탐구, ‘추 걸기’는 동아·비상의 ‘다르게 해 보기’예요. 멈춘 추의 무게가 곧 탄성력이라 두 방법의 그래프가 같아요.</p></article>`;
 }
 const HELP = {
   how: `<ol><li>오른쪽 아래 상자의 <b>추</b>를 누르거나 용수철 아래로 끌어 걸어요(＋ 단추로도 걸 수 있어요). 맨 아래 추를 누르면 내려요.</li>
+    <li><b>재는 방법</b>을 고를 수 있어요. <b>힘 센서로 당기기</b>는 교과서 탐구처럼 센서를 아래로 끌거나 ＋/−로 1 cm씩 늘이고, 센서에 나온 탄성력과 자의 눈금을 기록해요.</li>
     <li>용수철이 출렁이다 <b>멈추면</b> 지침이 가리키는 자의 눈금을 읽고 <b>기록하기</b>를 눌러요. 돋보기에 눈금이 3배로 보여요. 추 0개(처음 길이)부터 기록해요.</li>
-    <li>기록표의 ‘늘어난 길이’와 그래프를 보고 추의 무게와의 관계를 찾아요. <b>용수철 B</b>로 바꿔 같은 실험을 하고 두 직선의 기울기를 비교해요.</li></ol>`,
+    <li>그래프는 교과서처럼 가로축이 늘어난 길이, 세로축이 탄성력(멈춘 추의 무게)이에요. ‘늘어난 길이’·‘용수철 길이’로 바꿔 볼 수도 있어요. <b>용수철 B</b>로 바꿔 같은 실험을 하고 두 직선의 기울기를 비교해요.</li></ol>`,
   keys: '<kbd>+</kbd> 추 걸기 · <kbd>−</kbd> 추 내리기 · 기록하기 단추에 포커스 후 <kbd>Enter</kbd>',
   model: `<ul><li>추 한 개는 질량 100 g, 무게 0.98 N(지구에서 1 kg의 무게 9.8 N)으로 계산했어요.</li>
     <li>용수철 A는 추 한 개마다 2.0 cm, B는 1.0 cm 늘어나도록 정했어요(A 49 N/m, B 98 N/m). 추 5개까지는 탄성 한계 안이라 늘어난 길이가 무게에 비례해요.</li>
     <li>자의 0 눈금은 용수철 윗고리에 맞췄고, 지침이 가리키는 눈금이 용수철 길이예요. 자는 1 mm 단위로 읽어요.</li>
     <li>추를 걸면 용수철이 잠시 출렁이다 멈춰요(감쇠가 있는 진동). 멈춘 뒤에만 기록할 수 있어요.</li>
-    <li>용수철 자체의 무게는 늘어나는 길이에 넣지 않았어요.</li></ul>`,
-  source: '<p>2022 개정 중학교 과학 ‘힘의 작용’ 탐구 활동 ‘용수철의 탄성력 측정하기’와 [9과05-02] 중력, 탄성력, 마찰력, 부력을 이해하고, 각 힘의 특징을 크기와 방향으로 설명할 수 있다(해설: 질량과 무게를 구별). 이전 판(React 한 화면)의 기능(추 걸기·단위·그래프 두 가지)을 이어받아 다시 만들었어요.</p>',
+    <li>용수철 자체의 무게는 늘어나는 길이에 넣지 않았어요.</li>
+    <li>힘 센서로 당길 때는 손으로 잡고 있어 출렁이지 않아요. 센서 값은 용수철 상수 × 늘어난 길이로 계산해 0.01 N까지 보여 줘요. 0.5 cm 단위로, 추 5개의 무게와 같은 힘(4.9 N)까지 늘일 수 있어요(A 10 cm, B 5 cm) — 탄성 한계를 넘지 않게 했어요.</li></ul>`,
+  source: '<p>2022 개정 중학교 과학 ‘힘의 작용’ — [9과05-02] 중력, 탄성력, 마찰력, 부력을 이해하고, 각 힘의 특징을 크기와 방향으로 설명할 수 있다(해설: 질량과 무게를 구별).</p><p>교과서: 천재교육(임성숙) 중학교 과학 1 160~163쪽, 동아출판 154~157쪽, 비상교육 166~169쪽의 탐구 ‘용수철의 탄성력 측정하기’를 따랐어요. 그래프는 교과서처럼 가로축을 용수철이 늘어난 길이, 세로축을 탄성력으로 그렸고, 생활 속 예(장대높이뛰기·활·트램펄린·자판·볼펜 등)도 교과서에서 골랐어요. 그림은 새로 그렸어요. 이전 판(React 한 화면)의 기능(추 걸기·단위·그래프)을 이어받아 다시 만들었어요.</p>',
   wipe: '기록표, 그래프, 용수철·추 상태',
 };
 
 /* ═════════ 이벤트 · 시작 ═════════ */
 function capture() {
-  const P = SPRINGS[S.sp], rows = recs.filter(r => r.s === S.sp).sort((a, b) => a.n - b.n);
+  const P = SPRINGS[S.sp], rows = recs.filter(r => r.s === S.sp).sort((a, b) => a.ext - b.ext);
   return { svg, flashEl: $('#stage'),
-    cond: `${P.name} · 추 ${S.n}개(무게 ${f2(S.n * W_N)} N) · 처음 길이 ${f1(P.L0 / 10)} cm`,
-    state: `${settled() ? `용수철 길이 ${f1(readCm())} cm · 늘어난 길이 ${f1(readCm() - P.L0 / 10)} cm` : '용수철이 출렁이는 중'}${rows.length ? ` · 기록(${S.sp}): ${rows.map(r => `${r.n}개 ${f1(r.ext)} cm`).join(', ')}` : ''}` };
+    cond: S.how === 'p' ? `${P.name} · 힘 센서로 ${f1(S.pull)} cm 당김(센서 값 ${f2(forceNow())} N) · 처음 길이 ${f1(P.L0 / 10)} cm` : `${P.name} · 추 ${S.n}개(무게 ${f2(S.n * W_N)} N) · 처음 길이 ${f1(P.L0 / 10)} cm`,
+    state: `${settled() ? `용수철 길이 ${f1(readCm())} cm · 늘어난 길이 ${f1(readCm() - P.L0 / 10)} cm` : '용수철이 출렁이는 중'}${rows.length ? ` · 기록(${S.sp}): ${rows.map(r => r.p != null ? `센서 ${f2(r.W)} N ${f1(r.ext)} cm` : `${r.n}개 ${f1(r.ext)} cm`).join(', ')}` : ''}` };
 }
 function sizeText() {
   const r = svg.getBoundingClientRect(); if (!r.width) return;
@@ -1131,6 +1228,10 @@ function bind() {
   $('#wPlus').addEventListener('click', () => setN(S.n + 1, '추를 걸었어요'));
   $('#recBtn').addEventListener('click', record);
   $('#undoBtn').addEventListener('click', () => { if (!recs.length) return; recs.pop(); save(); renderTable(); renderGraph(); syncPanel(); announce('마지막 기록을 지웠어요.'); });
+  $('#pMinus').innerHTML = icon('minus'); $('#pPlus').innerHTML = icon('plus');
+  $('#pMinus').addEventListener('click', () => setPull(Math.ceil(S.pull) - 1));
+  $('#pPlus').addEventListener('click', () => setPull(Math.floor(S.pull) + 1));
+  $('#howSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setHow(b.dataset.h); });
   $('#springSeg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setSpring(b.dataset.s); });
   $('#ySeg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.yMode = b.dataset.y; save(); syncPanel(); renderGraph(); });
 }
@@ -1138,12 +1239,12 @@ buildStatic(); bind();
 SS.init({
   id: 'spring-force', title: '용수철 탄성력 실험', file: '용수철탄성력실험', version: APP_VERSION, date: APP_DATE,
   help: HELP, theory, capture, onResize: sizeText,
-  onKey: e => { if (e.key === '+' || e.key === '=') { e.preventDefault(); setN(S.n + 1, '추를 걸었어요'); } else if (e.key === '-' || e.key === '_') { e.preventDefault(); setN(S.n - 1, '추를 내렸어요'); } },
-  onWipe: () => { S = { sp: 'A', n: 0, yMode: 'ext' }; recs = []; dyn.y = 0; dyn.v = 0; render(); renderTable(); renderGraph(); },
+  onKey: e => { const up = e.key === '+' || e.key === '=', dn = e.key === '-' || e.key === '_'; if (!up && !dn) return; e.preventDefault(); if (S.how === 'p') setPull(up ? Math.floor(S.pull) + 1 : Math.ceil(S.pull) - 1); else setN(S.n + (up ? 1 : -1), up ? '추를 걸었어요' : '추를 내렸어요'); },
+  onWipe: () => { S = { sp: 'A', n: 0, yMode: 'fx', how: 'w', pull: 0 }; recs = []; dyn.y = 0; dyn.v = 0; render(); renderTable(); renderGraph(); },
 });
 renderTable(); sizeText(); renderGraph();
 SS.loop(step);
-window.SpringLab = { setN, setSpring, record, step, state: () => ({ S, recs, dyn: { ...dyn }, settled: settled(), read: readCm() }) };
+window.SpringLab = { setN, setSpring, setHow, setPull, record, step, state: () => ({ S, recs, dyn: { ...dyn }, settled: settled(), read: readCm() }) };
 
 </script>
 </body>
