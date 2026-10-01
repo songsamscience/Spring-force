@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
-<meta name="version" content="2.1">
+<meta name="version" content="2.2">
 <meta name="description" content="스탠드에 매단 용수철을 추로 걸거나 힘 센서로 당겨 늘어난 길이와 탄성력을 재고, 기록표와 그래프로 탄성력이 늘어난 길이에 비례함을 찾는 중학교 과학 가상실험실">
 <meta property="og:title" content="송쌤과학 가상실험실 | 용수철 탄성력 실험">
 <meta property="og:description" content="추를 걸거나 힘 센서로 당겨 용수철을 늘여 봐요 — 늘어난 길이와 탄성력은 어떤 관계일까요?">
@@ -234,6 +234,56 @@ dialog::backdrop{background:var(--scrim)}
 @media (max-width:360px){.icon-btn{width:38px}.utilities{gap:0}}
 
 /* ═══════ 이 실험실 ═══════ */
+/* 실험 기구 재질 키트 — 토큰(두 테마 같은 목록) · 클래스. apparatus.js와 함께 쓴다. */
+:root[data-theme="dark"]{
+  --ap-m0:#262c34;--ap-m1:#47505b;--ap-m2:#7c8793;--ap-m3:#b4bec8;--ap-m4:#eef3f7;
+  --ap-cast-top:#3a4653;--ap-cast-top2:#4b5866;--ap-cast-1:#2b3540;--ap-cast-2:#161c23;--ap-cast-label:#3c4855;
+  --ap-rub-1:#3a4048;--ap-rub-2:#1b1f24;
+  --ap-pl-1:#4a5664;--ap-pl-2:#323c48;--ap-pl-3:#1f2630;
+  --ap-wood-1:#a4794c;--ap-wood-2:#7f5a35;--ap-wood-3:#5c3f24;
+  --ap-brass-0:#fff2c2;--ap-brass-1:#f0d27a;--ap-brass-2:#c49a28;--ap-brass-3:#6f530f;
+  --ap-lcd-1:#0d1f17;--ap-lcd-2:#08140f;--ap-lcd-t:#7ef0b8;--ap-lcd-dim:#1d3a2c;
+  --ap-glass-tint:#ffffff;--ap-glass-edge:#9fbfd2;--ap-glass-line:#7f9db0;
+  --ap-shadow:#000000;--ap-hi:#ffffff;
+}
+:root[data-theme="light"]{
+  --ap-m0:#4a5360;--ap-m1:#7a8592;--ap-m2:#aab4be;--ap-m3:#dbe1e7;--ap-m4:#ffffff;
+  --ap-cast-top:#6a7684;--ap-cast-top2:#7d8997;--ap-cast-1:#525d6a;--ap-cast-2:#323a44;--ap-cast-label:#5d6976;
+  --ap-rub-1:#4a5059;--ap-rub-2:#262a30;
+  --ap-pl-1:#f6f8fa;--ap-pl-2:#dfe5ea;--ap-pl-3:#b9c4ce;
+  --ap-wood-1:#d8ad78;--ap-wood-2:#b8864f;--ap-wood-3:#8d6236;
+  --ap-brass-0:#fff6d2;--ap-brass-1:#f3d880;--ap-brass-2:#c69a1e;--ap-brass-3:#7a5a0c;
+  --ap-lcd-1:#163a2a;--ap-lcd-2:#0e2a1e;--ap-lcd-t:#a3ffd0;--ap-lcd-dim:#24503b;
+  --ap-glass-tint:#ffffff;--ap-glass-edge:#7f9fb4;--ap-glass-line:#6f8fa4;
+  --ap-shadow:#1c2834;--ap-hi:#ffffff;
+}
+.ap-contact{fill:url(#apContact)}
+.ap-cast-top{fill:url(#apCastTop)}
+.ap-cast-front{fill:url(#apCastFront)}
+.ap-cast-label{fill:var(--ap-cast-label);opacity:.6}
+.ap-edge-hi{fill:none;stroke:var(--ap-hi);stroke-width:.5;stroke-linecap:round;opacity:.28}
+.ap-edge-lo{fill:none;stroke:#000;stroke-width:.6;stroke-linecap:round;opacity:.25}
+.ap-rubber{fill:url(#apRubberY)}
+.ap-metal-x{fill:url(#apMetalX)}
+.ap-metal-y{fill:url(#apMetalY)}
+.ap-cap{fill:var(--ap-m3)}
+.ap-endcap{fill:var(--ap-m1);opacity:.55}
+.ap-block{fill:url(#apBlockY);stroke:var(--ap-m0);stroke-width:.5}
+.ap-knob{fill:url(#apRubberX);stroke:var(--ap-m0);stroke-width:.4}
+.ap-knurl{fill:none;stroke:#000;stroke-width:.45;opacity:.35}
+.ap-screw{fill:url(#apMetalX);stroke:var(--ap-m0);stroke-width:.35}
+.ap-slot{fill:none;stroke:var(--ap-m0);stroke-linecap:round}
+.ap-lcd-bezel{fill:#000;opacity:.45}
+.ap-lcd{fill:url(#apLcd)}
+.ap-lcd-t{fill:var(--ap-lcd-t);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;font-variant-numeric:tabular-nums}
+.ap-glare{fill:#fff;opacity:.06}
+.ap-plastic{fill:url(#apPlasticY)}
+.ap-wood{fill:url(#apWoodY)}
+.ap-brass{fill:url(#apBrassX)}
+.ap-glass{fill:url(#apGlassX);stroke:var(--ap-glass-edge);stroke-width:.8}
+.ap-glass-hi{fill:none;stroke:var(--ap-hi);stroke-linecap:round;opacity:.42}
+.ap-sphere{fill:url(#apSphere)}
+
 /* 용수철 탄성력 실험 — 세로로 긴 실험대(왼쪽) + 넓은 측정·기록 칸(오른쪽: 계기 → 기록표 | 그래프) */
 :root[data-theme="dark"]{
   --force:#ff7b5c;--force-2:#6ec7ff;--read:#ff5d73;
@@ -262,7 +312,7 @@ dialog::backdrop{background:var(--scrim)}
 .stage-tools{position:absolute;top:12px;left:12px;z-index:3}
 
 /* 장면 */
-.bench{fill:var(--bench)}.bench-edge{fill:var(--bench-edge)}
+.bench{fill:var(--bench)}.bench-edge{fill:var(--bench-edge)}.bench-top{fill:var(--bench-edge);opacity:.55}
 .rod-lo-s{stop-color:var(--rod-lo)}.rod-hi-s{stop-color:var(--rod-hi)}
 .base-hi-s{stop-color:var(--base-hi)}.base-lo-s{stop-color:var(--base-lo)}
 .rod{fill:url(#rodGrad)}
@@ -276,22 +326,29 @@ dialog::backdrop{background:var(--scrim)}
 .hook{fill:none;stroke:var(--hookc);stroke-width:1.4;stroke-linecap:round}
 .brass-hi-s{stop-color:var(--brass-hi)}.brass-s{stop-color:var(--brass)}.brass-lo-s{stop-color:var(--brass-lo)}
 .w-body{fill:url(#brassGrad);stroke:var(--brass-lo);stroke-width:.5}
-.w-top{fill:var(--brass-hi);opacity:.55}
+.w-top{fill:var(--ap-brass-0);opacity:.5}.w-bot{fill:var(--ap-brass-3);opacity:.45}.w-edge{stroke:var(--brass-lo);stroke-width:.5}
 .w-lbl{fill:var(--brass-lo);font-size:var(--t12);font-weight:800;text-anchor:middle;dominant-baseline:central}
 :root[data-theme="dark"] .w-lbl{fill:#3b2a05}
 .w-hit{fill:transparent;cursor:pointer}
 .ctl-row[hidden]{display:none}
-.sensor{fill:var(--sensor,#e8edf2);stroke:var(--hookc);stroke-width:.8}
-.sensor-lcd{fill:#0f2a1f}
-.sensor-t{fill:#7ef0b0;font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;text-anchor:end;dominant-baseline:central}
-.sensor-u{fill:#44596b;font:700 5.5px var(--font-ui);text-anchor:middle;dominant-baseline:central}
-.sensor-btn{fill:var(--read)}
-.sensor-grip{fill:var(--hookc)}
+.sensor{fill:url(#apPlasticX);stroke:var(--ap-m0);stroke-width:.6}
+.sensor-hi{fill:none;stroke:var(--ap-hi);stroke-width:.5;opacity:.25}
+.sensor-band{fill:var(--force-2);opacity:.85}
+.sensor-u{fill:var(--ap-lcd-t);font:700 4.4px var(--font-ui);text-anchor:end;dominant-baseline:central}
+.sensor-name{fill:var(--text-2);font:700 4.6px var(--font-ui);text-anchor:middle;dominant-baseline:central}
+.sensor-btn{fill:url(#apRubberX);stroke:var(--ap-m0);stroke-width:.4}
+.sensor-btn2{fill:var(--read);opacity:.85}
+.sensor-bt{fill:var(--ap-m3);font:700 3.4px var(--font-ui);text-anchor:middle;dominant-baseline:central}
+.sensor-grip{fill:none;stroke:url(#apMetalY);stroke-width:2.6}
+.sensor-g{cursor:ns-resize}
 .sensor-g:hover .sensor{stroke:var(--accent)}
 .w-tray-hit{fill:transparent;cursor:grab}
 .tray{fill:var(--tray);stroke:var(--tray-edge);stroke-width:.8}
+.tray-back{fill:var(--tray);opacity:.7}
 .tray-t{fill:var(--text-2);font-size:var(--t12);font-weight:600;text-anchor:middle}
 .ruler{fill:var(--ruler);stroke:var(--ruler-edge);stroke-width:.6}
+.ruler-sh{fill:#000;opacity:.28}
+.ruler-hi{fill:#fff;opacity:.35}
 .r-tick{stroke:var(--ruler-ink);stroke-width:.35}
 .r-tick.mid{stroke-width:.45}.r-tick.maj{stroke-width:.6}
 .r-num{fill:var(--ruler-ink);font-size:6px;font-weight:600;text-anchor:end;dominant-baseline:central;font-variant-numeric:tabular-nums}
@@ -299,8 +356,11 @@ dialog::backdrop{background:var(--scrim)}
 .pointer{stroke:var(--read);stroke-width:1;stroke-linecap:round}
 .pointer-tip{fill:var(--read)}
 .lens-bg{fill:var(--loupe-bg)}
-.lens-ring{fill:none;stroke:var(--loupe-ring);stroke-width:1.6}
-.lens-handle{stroke:var(--loupe-ring);stroke-width:4;stroke-linecap:round}
+.lens-ring{fill:none;stroke:var(--ap-m3);stroke-width:3}
+.lens-ring-in{fill:none;stroke:var(--ap-m0);stroke-width:.6;opacity:.7}
+.lens-glare{fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;opacity:.35}
+.lens-neck{stroke:var(--ap-m2);stroke-width:4;stroke-linecap:round}
+.lens-handle{stroke:var(--ap-rub-1);stroke-width:6.5;stroke-linecap:round}
 .lens-t{fill:var(--text-1);font-size:var(--t13);font-weight:800;text-anchor:middle;font-variant-numeric:tabular-nums;paint-order:stroke;stroke:var(--stage);stroke-width:var(--h3,3px);stroke-linejoin:round}
 .lens-cap{fill:var(--text-2);font-size:var(--t12);font-weight:600;text-anchor:middle}
 .fa-body{stroke-width:2.6;fill:none}
@@ -818,8 +878,105 @@ const SS = (() => {
 })();
 
 /* ═══════ 이 실험실 ═══════ */
+/* ───────── 실험 기구 재질 키트 (중1 여섯 실험실 공용) ─────────
+   광원은 장면마다 하나, 왼쪽 위(shell.css --light-angle 215deg와 같다).
+   - 원기둥(세운 봉): 왼쪽 1/3에 좁은 하이라이트, 오른쪽으로 어두워진다 → apMetalX
+   - 가로 막대: 위쪽에 하이라이트 → apMetalY
+   - 주철 받침: 윗면이 밝고 앞면이 어둡다 → ap-cast-top / apCastFront
+   - 유리: 테두리 하이라이트 + 안쪽 반사선 + 뒤쪽 밝기 차이 → apGlassX + 하이라이트 선
+   - 바닥에 닿은 물체에는 접촉 그림자(apContact)를 깐다
+   색은 모두 apparatus.css의 테마 토큰(var)으로만 쓴다. AP.defs(svg)를 장면마다 한 번 부른다. */
+const AP = (() => {
+  const NS = 'http://www.w3.org/2000/svg';
+  const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+  const GRAD = {
+    apMetalX: ['h', [[0, '--ap-m1'], [.16, '--ap-m3'], [.3, '--ap-m4'], [.46, '--ap-m2'], [.8, '--ap-m1'], [1, '--ap-m0']]],
+    apMetalY: ['v', [[0, '--ap-m3'], [.22, '--ap-m4'], [.5, '--ap-m2'], [.84, '--ap-m1'], [1, '--ap-m0']]],
+    apBlockY: ['v', [[0, '--ap-m2'], [.12, '--ap-m3'], [.2, '--ap-m2'], [1, '--ap-m1']]],
+    apCastFront: ['v', [[0, '--ap-cast-1'], [1, '--ap-cast-2']]],
+    apCastTop: ['v', [[0, '--ap-cast-top2'], [1, '--ap-cast-top']]],
+    apRubberX: ['h', [[0, '--ap-rub-2'], [.32, '--ap-rub-1'], [1, '--ap-rub-2']]],
+    apRubberY: ['v', [[0, '--ap-rub-1'], [1, '--ap-rub-2']]],
+    apPlasticY: ['v', [[0, '--ap-pl-1'], [.55, '--ap-pl-2'], [1, '--ap-pl-3']]],
+    apPlasticX: ['h', [[0, '--ap-pl-2'], [.25, '--ap-pl-1'], [.7, '--ap-pl-2'], [1, '--ap-pl-3']]],
+    apWoodY: ['v', [[0, '--ap-wood-1'], [.5, '--ap-wood-2'], [1, '--ap-wood-3']]],
+    apBrassX: ['h', [[0, '--ap-brass-3'], [.2, '--ap-brass-1'], [.34, '--ap-brass-0'], [.55, '--ap-brass-2'], [1, '--ap-brass-3']]],
+    apLcd: ['v', [[0, '--ap-lcd-1'], [1, '--ap-lcd-2']]],
+  };
+  function defs(svg) {
+    if (svg.querySelector('#apDefsMark')) return;
+    let d = svg.querySelector('defs'); if (!d) d = mk('defs', {}, null), svg.insertBefore(d, svg.firstChild);
+    mk('g', { id: 'apDefsMark' }, d);
+    for (const id in GRAD) {
+      const [dir, stops] = GRAD[id];
+      const g = mk('linearGradient', dir === 'h' ? { id, x1: 0, y1: 0, x2: 1, y2: 0 } : { id, x1: 0, y1: 0, x2: 0, y2: 1 }, d);
+      for (const [o, v] of stops) mk('stop', { offset: o, style: `stop-color:var(${v})` }, g);
+    }
+    const gl = mk('linearGradient', { id: 'apGlassX', x1: 0, y1: 0, x2: 1, y2: 0 }, d);       // 유리: 가장자리가 밝고 가운데가 투명
+    [[0, .5], [.14, .08], [.5, .03], [.86, .05], [1, .3]].forEach(([o, a]) => mk('stop', { offset: o, style: `stop-color:var(--ap-glass-tint);stop-opacity:${a}` }, gl));
+    const c = mk('radialGradient', { id: 'apContact' }, d);
+    mk('stop', { offset: 0, style: 'stop-color:var(--ap-shadow);stop-opacity:.55' }, c);
+    mk('stop', { offset: .6, style: 'stop-color:var(--ap-shadow);stop-opacity:.22' }, c);
+    mk('stop', { offset: 1, style: 'stop-color:var(--ap-shadow);stop-opacity:0' }, c);
+    const s = mk('radialGradient', { id: 'apSphere', cx: .36, cy: .32, r: .72 }, d);            // 구·원판 하이라이트(색은 겹쳐 그린 면이 정한다)
+    mk('stop', { offset: 0, style: 'stop-color:#fff;stop-opacity:.75' }, s);
+    mk('stop', { offset: .35, style: 'stop-color:#fff;stop-opacity:.12' }, s);
+    mk('stop', { offset: 1, style: 'stop-color:#fff;stop-opacity:0' }, s);
+  }
+  /* 접촉 그림자: 바닥 위 (cx, y)에 납작한 타원 */
+  const contact = (g, cx, y, rx, ry, k = 1) => mk('ellipse', { cx, cy: y, rx, ry: ry ?? Math.max(1.2, rx * .1), class: 'ap-contact', style: k === 1 ? '' : `opacity:${k}` }, g);
+  /* 옆에서 본 주철 받침: (x, y) = 왼쪽 위, 윗면(앞뒤 깊이)과 앞면, 고무발 */
+  function base(g, x, y, w, h, o = {}) {
+    contact(g, x + w / 2, y + h + .6, w * .56, Math.max(2, h * .45));
+    const t = h * (o.top ?? .34), r = Math.min(3, h * .25);
+    mk('path', { d: `M${x + 3} ${y}H${x + w - 3}L${x + w} ${y + t}H${x}Z`, class: 'ap-cast-top' }, g);
+    mk('rect', { x, y: y + t, width: w, height: h - t, rx: r * .6, class: 'ap-cast-front' }, g);
+    mk('path', { d: `M${x + .8} ${y + t + .5}H${x + w - .8}`, class: 'ap-edge-hi' }, g);
+    if (o.feet !== false) for (const fx of [x + w * .08, x + w * .92 - Math.max(6, w * .07)]) mk('rect', { x: fx, y: y + h - .6, width: Math.max(6, w * .07), height: 2, rx: 1, class: 'ap-rubber' }, g);
+    if (o.label) mk('rect', { x: x + w * .3, y: y + t + (h - t) * .3, width: w * .4, height: (h - t) * .38, rx: 1, class: 'ap-cast-label' }, g);
+  }
+  /* 세운 봉: 금속 원기둥 + 윗마개 */
+  function rod(g, x, y, w, h, o = {}) {
+    mk('rect', { x, y, width: w, height: h, rx: Math.min(w * .35, 2.5), class: 'ap-metal-x' }, g);
+    if (o.cap !== false) mk('ellipse', { cx: x + w / 2, cy: y + .6, rx: w / 2, ry: Math.min(1.6, w * .14), class: 'ap-cap' }, g);
+  }
+  /* 가로 막대(팔): 위쪽 하이라이트 + 끝마개 */
+  function bar(g, x, y, w, h) {
+    mk('rect', { x, y, width: w, height: h, rx: h / 2, class: 'ap-metal-y' }, g);
+    mk('ellipse', { cx: x + w - h * .3, cy: y + h / 2, rx: h * .3, ry: h / 2 - .2, class: 'ap-endcap' }, g);
+  }
+  /* 손으로 돌리는 나사(손잡이): (x, y) = 축 중심, side = -1 왼쪽으로 나옴 / 1 오른쪽 */
+  function knob(g, x, y, side, s = 1) {
+    const L = 5 * s, H = 9 * s, sh = 3 * s, x0 = side < 0 ? x - sh - L : x + sh;
+    mk('rect', { x: side < 0 ? x - sh : x, y: y - 1.4 * s, width: sh, height: 2.8 * s, class: 'ap-metal-y' }, g);
+    mk('rect', { x: x0, y: y - H / 2, width: L, height: H, rx: 1.4 * s, class: 'ap-knob' }, g);
+    let k = ''; for (let i = 1; i < 4; i++) k += `M${(x0 + L * i / 4).toFixed(2)} ${(y - H / 2 + 1.2 * s).toFixed(2)}V${(y + H / 2 - 1.2 * s).toFixed(2)}`;
+    mk('path', { d: k, class: 'ap-knurl' }, g);
+    mk('path', { d: `M${x0 + .8 * s} ${y - H / 2 + .9 * s}H${x0 + L - .8 * s}`, class: 'ap-edge-hi' }, g);
+  }
+  /* 보스헤드: 봉을 감싸는 블록 + 손잡이 나사 */
+  function boss(g, x, y, w, h, o = {}) {
+    mk('rect', { x, y, width: w, height: h, rx: Math.min(2.6, h * .18), class: 'ap-block' }, g);
+    mk('path', { d: `M${x + 1.2} ${y + .9}H${x + w - 1.2}`, class: 'ap-edge-hi' }, g);
+    mk('path', { d: `M${x + 1.2} ${y + h - .6}H${x + w - 1.2}`, class: 'ap-edge-lo' }, g);
+    if (o.knob) knob(g, o.knob < 0 ? x : x + w, y + h / 2, o.knob, o.s || 1);
+    if (o.screw) screw(g, x + w / 2, y + h / 2, Math.min(w, h) * .16);
+  }
+  function screw(g, cx, cy, r) {
+    mk('circle', { cx, cy, r, class: 'ap-screw' }, g);
+    mk('path', { d: `M${cx - r * .62} ${cy + r * .3}L${cx + r * .62} ${cy - r * .3}`, class: 'ap-slot', style: `stroke-width:${(r * .32).toFixed(2)}` }, g);
+  }
+  /* 표시창: 안으로 들어간 테두리 + 위쪽 빛 반사 */
+  function lcd(g, x, y, w, h) {
+    mk('rect', { x: x - .8, y: y - .8, width: w + 1.6, height: h + 1.6, rx: 2.2, class: 'ap-lcd-bezel' }, g);
+    mk('rect', { x, y, width: w, height: h, rx: 1.6, class: 'ap-lcd' }, g);
+    mk('path', { d: `M${x + 1.2} ${y + 1}H${x + w * .6}L${x + w * .5} ${y + h * .32}H${x + 1.2}Z`, class: 'ap-glare' }, g);
+  }
+  return { defs, contact, base, rod, bar, knob, boss, screw, lcd, mk };
+})();
+
 /* ───────── 용수철 탄성력 실험 — 추를 걸고 자로 재어 기록표·그래프로 ───────── */
-const APP_VERSION = '2.1', APP_DATE = '2026-10-01';
+const APP_VERSION = '2.2', APP_DATE = '2026-10-01';
 const { $, $$, el, icon, toast, announce, store } = SS;
 
 /* ── 과학 진실층 ── */
@@ -837,7 +994,7 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const f1 = v => (Math.round(v * 10) / 10).toFixed(1), f2 = v => v.toFixed(2);
 
 /* ── 상태 ── */
-let S = Object.assign({ sp: 'A', n: 0, yMode: 'fx', how: 'w', pull: 0 }, store.get('ui', {}));   // how: w 추 걸기 · p 힘 센서로 당기기(세 교과서의 본 탐구)   // fx: 교과서 그래프(가로 늘어난 길이 · 세로 탄성력)
+let S = Object.assign({ sp: 'A', n: 0, yMode: 'fx', how: 'w', pull: 0 }, store.get('ui', {}));   // how: w 추 걸기 · p 힘 센서로 당기기(교과서의 본 탐구)   // fx: 교과서 그래프(가로 늘어난 길이 · 세로 탄성력)
 let recs = store.get('recs', []);
 const dyn = { y: 0, v: 0 };            // 늘어난 길이(m) · 속도
 function eqY() { return S.how === 'p' ? S.pull / 100 : S.n * W_N / SPRINGS[S.sp].k; }
@@ -853,39 +1010,46 @@ const readCm = () => Math.round(lenMM()) / 10;                        // 자는 
 const svg = $('#scene');
 let pxu = 1.4;
 function buildStatic() {
-  const b = $('#gBench');
+  AP.defs(svg);
+  const b = $('#gBench');                                                   // 실험대: 윗면 띠 + 앞면
   el('rect', { x: -20, y: BENCH_Y, width: 320, height: 30, class: 'bench' }, b);
-  el('rect', { x: -20, y: BENCH_Y, width: 320, height: 1.2, class: 'bench-edge' }, b);
-  el('text', { x: 6, y: 508.5, class: 'cap-s', 'dominant-baseline': 'central' }, b).textContent = '옆에서 본 모습 · 1 mm 눈금 자';
-  const s = $('#gStand');
-  el('rect', { x: 14, y: 486, width: 182, height: 14, rx: 3, class: 'base' }, s);
-  el('rect', { x: 36, y: 30, width: 12, height: 456, rx: 2, class: 'rod' }, s);
-  el('rect', { x: 34, y: 28, width: 16, height: 5, rx: 2, class: 'boss' }, s);
-  // 용수철 걸이: 보스헤드 + 가로 막대
-  el('rect', { x: 28, y: 38, width: 28, height: 20, rx: 2.5, class: 'boss' }, s);
-  el('rect', { x: 30, y: 39.5, width: 24, height: 2, rx: 1, class: 'boss-hi' }, s);
-  el('rect', { x: 18, y: 44, width: 10, height: 8, rx: 2, class: 'knob' }, s);
-  el('rect', { x: 56, y: 44, width: 124, height: 8, rx: 3, class: 'arm' }, s);
-  // 자 고정대
-  for (const y of [96, 330]) {
-    el('rect', { x: 30, y: y - 8, width: 24, height: 16, rx: 2.5, class: 'boss' }, s);
-    el('rect', { x: 20, y: y - 3.5, width: 10, height: 7, rx: 2, class: 'knob' }, s);
-    el('rect', { x: 54, y: y - 3, width: RUL.x0 - 54 + 2, height: 6, rx: 2, class: 'arm' }, s);
+  el('rect', { x: -20, y: BENCH_Y, width: 320, height: 3, class: 'bench-top' }, b);
+  el('rect', { x: -20, y: BENCH_Y, width: 320, height: .8, class: 'bench-edge' }, b);
+  el('text', { x: 6, y: 508.6, class: 'cap-s', 'dominant-baseline': 'central' }, b).textContent = '옆에서 본 모습 · 1 mm 눈금 자';
+  const s = $('#gStand');                                                   // 스탠드: 주철 받침(160 mm) · 봉 Ø12 · 보스헤드 3개
+  AP.base(s, 10, 484, 180, 16, { label: true });
+  AP.rod(s, 36, 26, 12, 460);
+  AP.boss(s, 27, 36, 30, 22, { knob: -1 });
+  AP.bar(s, 57, 43, 125, 8);
+  el('path', { d: 'M176 47h6', class: 'ap-edge-lo' }, s);
+  for (const y of [96, 330]) {                                              // 자 고정 클램프
+    AP.boss(s, 29, y - 9, 26, 18, { knob: -1, s: .85 });
+    AP.bar(s, 55, y - 3, RUL.x0 - 55 + 4, 6);
   }
-  // 자: 0 눈금 = 용수철 윗고리 (용수철 길이를 바로 읽는다)
-  el('rect', { x: RUL.x0, y: Y_ZERO - 6, width: RUL.x1 - RUL.x0, height: 312, rx: 1.2, class: 'ruler' }, $('#gRuler'));
-  el('g', { id: 'rTicks' }, $('#gRuler'));
-  // 추 상자(3단 받침)
+  // 자: 0 눈금 = 용수철 윗고리 (용수철 길이를 바로 읽는다) · 뒤 그림자 · 클램프 집게
+  const r = $('#gRuler');
+  el('rect', { x: RUL.x0 + 1.6, y: Y_ZERO - 4.4, width: RUL.x1 - RUL.x0, height: 312, rx: 1.2, class: 'ruler-sh' }, r);
+  el('rect', { x: RUL.x0, y: Y_ZERO - 6, width: RUL.x1 - RUL.x0, height: 312, rx: 1.2, class: 'ruler' }, r);
+  el('rect', { x: RUL.x0 + .6, y: Y_ZERO - 5.4, width: 1.2, height: 310.8, class: 'ruler-hi' }, r);
+  for (const y of [96, 330]) { el('rect', { x: RUL.x0 - 3, y: y - 7, width: 8, height: 14, rx: 1.4, class: 'ap-block' }, r); AP.screw(r, RUL.x0 + 1, y, 2.2); }
+  el('g', { id: 'rTicks' }, r);
+  // 추 받침대(나무, 3단)
   const t = $('#gTray');
-  el('rect', { x: 198, y: 386, width: 62, height: 114, rx: 3, class: 'tray' }, t);          // 3단 추 받침: 추의 아래 고리가 선반에 닿는다
-  for (const y of [428, 464]) el('rect', { x: 198, y, width: 62, height: 2.2, class: 'tray' }, t);
-  el('text', { x: 229, y: 380, class: 'tray-t' }, t).textContent = '추 100 g';
-  // 돋보기
+  AP.contact(t, 229, 500.5, 40, 3);
+  el('rect', { x: 199, y: 388, width: 60, height: 112, rx: 2, class: 'tray-back' }, t);
+  for (const x of [196, 258]) el('rect', { x, y: 384, width: 5, height: 116, rx: 1.2, class: 'ap-wood' }, t);
+  for (const y of [428, 464, 497]) { el('rect', { x: 196, y, width: 67, height: 3.4, rx: .8, class: 'ap-wood' }, t); el('path', { d: `M197 ${y + .5}H262`, class: 'ap-edge-hi' }, t); }
+  el('rect', { x: 194, y: 381, width: 71, height: 4.5, rx: 1.4, class: 'ap-wood' }, t);
+  el('text', { x: 229, y: 374, class: 'tray-t' }, t).textContent = '추 100 g';
+  // 돋보기: 금속 테 + 고무 손잡이 + 유리 반사
   const L = $('#gLoupe');
-  el('line', { x1: 246, y1: 146, x2: 256, y2: 160, class: 'lens-handle' }, L);
+  el('line', { x1: 247, y1: 147, x2: 252, y2: 154, class: 'lens-neck' }, L);
+  el('line', { x1: 251.5, y1: 153.5, x2: 259, y2: 165, class: 'lens-handle' }, L);
   el('circle', { cx: 222, cy: 120, r: 34, class: 'lens-bg' }, L);
   el('g', { id: 'lensIn', 'clip-path': 'url(#loupeClip)' }, L);
-  el('circle', { cx: 222, cy: 120, r: 34, class: 'lens-ring' }, L);
+  el('path', { d: 'M196 106a29 29 0 0 1 22 -20', class: 'lens-glare' }, L);
+  el('circle', { cx: 222, cy: 120, r: 35, class: 'lens-ring' }, L);
+  el('circle', { cx: 222, cy: 120, r: 33.2, class: 'lens-ring-in' }, L);
   el('text', { id: 'lensT', x: 222, y: 170, class: 'lens-t' }, L);
   el('text', { x: 222, y: 80, class: 'lens-cap' }, L).textContent = '돋보기 ×3';
 }
@@ -912,8 +1076,9 @@ function springPath(sp, y0, y1) {                     // 앞·뒤 가닥을 나�
 function weightG(parent, x, y, extra = {}) {         // 고리 추: y = 고리 꼭대기
   const g = el('g', extra, parent);
   el('path', { d: `M${x} ${y + 8}V${y + 3}a3 3 0 1 1 3 -3`, class: 'hook' }, g);
-  el('rect', { x: x - 12.5, y: y + 8, width: 25, height: 24, rx: 2.5, class: 'w-body' }, g);
-  el('rect', { x: x - 11, y: y + 9, width: 22, height: 2.2, rx: 1, class: 'w-top' }, g);
+  el('rect', { x: x - 12.5, y: y + 8, width: 25, height: 24, rx: 2.5, class: 'ap-brass w-edge' }, g);
+  el('rect', { x: x - 12.5, y: y + 8, width: 25, height: 3, rx: 1.4, class: 'w-top' }, g);
+  el('rect', { x: x - 12.5, y: y + 29.4, width: 25, height: 2.6, rx: 1.2, class: 'w-bot' }, g);
   el('path', { d: `M${x - 3} ${y + 32}a3 3 0 1 0 6 0`, class: 'hook' }, g);
   if (pxu >= 1.1) el('text', { x, y: y + 21, class: 'w-lbl' }, g).textContent = '100 g';
   return g;
@@ -966,17 +1131,23 @@ function render() {
   renderLoupe(yb);
   syncPanel();
 }
-function drawSensor(g, yb) {                           // 디지털 힘 센서(용수철저울): 고리에 걸고 아래로 당긴다
-  const F = forceNow(), x = X_AX;
-  el('path', { d: `M${x} ${yb + 3}V${yb + 12}`, class: 'hook' }, g);
+function drawSensor(g, yb) {                           // 디지털 힘 센서(용수철저울형): 위 고리를 용수철에 걸고 아래 손잡이를 당긴다
+  const F = forceNow(), x = X_AX, y0 = yb + 12;
+  el('path', { d: `M${x} ${yb + 2}v4a2.6 2.6 0 0 0 0 5.2v${y0 - yb - 11}`, class: 'hook' }, g);
   const s = el('g', { class: 'sensor-g', 'data-pull': '1' }, g);
-  el('rect', { x: x - 16, y: yb + 12, width: 32, height: 46, rx: 5, class: 'sensor' }, s);
-  el('rect', { x: x - 12, y: yb + 18, width: 24, height: 14, rx: 2, class: 'sensor-lcd' }, s);
-  el('text', { x: x + 10.5, y: yb + 25.5, class: 'sensor-t' }, s).textContent = f2(F);
-  el('text', { x: x, y: yb + 40, class: 'sensor-u' }, s).textContent = 'N · 힘 센서';
-  el('circle', { cx: x - 7, cy: yb + 50, r: 2.4, class: 'sensor-btn' }, s);
-  el('rect', { x: x - 10, y: yb + 58, width: 20, height: 10, rx: 4, class: 'sensor-grip' }, s);
-  el('rect', { x: x - 26, y: yb + 6, width: 52, height: 68, class: 'w-hit', 'data-noexport': '', 'data-pull': '1', style: 'cursor:ns-resize' }, s);
+  el('rect', { x: x - 4, y: y0 - 2.5, width: 8, height: 4, rx: 1.2, class: 'ap-metal-y' }, s);
+  el('rect', { x: x - 15, y: y0, width: 30, height: 50, rx: 6, class: 'sensor' }, s);
+  el('rect', { x: x - 15, y: y0, width: 30, height: 50, rx: 6, class: 'sensor-hi' }, s);
+  el('rect', { x: x - 15, y: y0 + 38, width: 30, height: 4, class: 'sensor-band' }, s);
+  AP.lcd(s, x - 11.5, y0 + 5, 23, 13);
+  el('text', { x: x + 6.6, y: y0 + 11.6, class: 'ap-lcd-t', style: 'font-size:7.6px;text-anchor:end;dominant-baseline:central' }, s).textContent = f2(F);
+  el('text', { x: x + 10.6, y: y0 + 12.4, class: 'sensor-u' }, s).textContent = 'N';
+  el('text', { x, y: y0 + 25, class: 'sensor-name' }, s).textContent = '힘 센서';
+  el('circle', { cx: x - 6, cy: y0 + 32, r: 2.6, class: 'sensor-btn' }, s); el('circle', { cx: x + 6, cy: y0 + 32, r: 2.6, class: 'sensor-btn2' }, s);
+  el('text', { x: x - 6, y: y0 + 32.3, class: 'sensor-bt' }, s).textContent = '0';
+  el('rect', { x: x - 3, y: y0 + 50, width: 6, height: 5, class: 'ap-metal-x' }, s);       // 아래 손잡이(D 고리)
+  el('path', { d: `M${x - 9} ${y0 + 55}h18a4 4 0 0 1 0 8h-18a4 4 0 0 1 0 -8Z`, class: 'sensor-grip' }, s);
+  el('rect', { x: x - 26, y: yb + 6, width: 52, height: 72, class: 'w-hit', 'data-noexport': '', 'data-pull': '1', style: 'cursor:ns-resize' }, s);
 }
 function arrow(g, cls, x, y, dy, label, anchor) {
   const gg = el('g', { class: cls }, g), hd = Math.min(7, Math.abs(dy) * .45), s = Math.sign(dy) || 1;
@@ -1033,7 +1204,7 @@ function fitK(pts) { const sxy = pts.reduce((a, p) => a + p[0] * p[1], 0), sxx =
 function renderGraph() {
   const g = $('#graph'); g.innerHTML = '';
   const X0 = 46, X1 = 346, Y0 = 214, Y1 = 28, fx = S.yMode === 'fx', ext = S.yMode === 'ext';
-  // fx: 가로 = 늘어난 길이(cm), 세로 = 탄성력(N) — 세 교과서의 그래프와 같은 축. 그 밖: 가로 = 추의 무게(N)
+  // fx: 가로 = 늘어난 길이(cm), 세로 = 탄성력(N) — 교과서의 그래프와 같은 축. 그 밖: 가로 = 추의 무게(N)
   const xMax = fx ? 12 : 5, xStep = fx ? 2 : 1, yMax = fx ? 5 : ext ? 12 : 22, yStep = fx ? 1 : ext ? 2 : 5;
   const xs = w => X0 + w / xMax * (X1 - X0), ys = v => Y0 - v / yMax * (Y0 - Y1);
   for (let v = 0; v <= yMax; v += yStep) { el('line', { x1: X0, y1: ys(v), x2: X1, y2: ys(v), class: 'g-grid' }, g); el('text', { x: X0 - 8, y: ys(v) + 4, class: 'g-t', 'text-anchor': 'end' }, g).textContent = v; }
@@ -1180,14 +1351,14 @@ function theory() {
   <article class="tcard"><h3>질량과 무게는 달라요</h3>
     <p class="def">무게는 물체에 작용하는 중력의 크기(N), 질량은 장소가 달라져도 변하지 않는 물체의 고유한 양(g, kg)이에요.</p>
     <p>지구에서 질량 1 kg인 물체의 무게는 약 9.8 N이라, 100 g 추 한 개의 무게는 0.98 N이에요(교과서 탐구에서는 계산하기 쉽게 약 1 N으로 어림하기도 해요). 달에서는 질량은 그대로이고 무게만 지구의 약 1/6이 돼요.</p></article>
-  <article class="tcard"><h3>교과서에서는</h3>
-    <p class="def">세 교과서 모두 용수철을 늘이며 탄성력을 재고, 늘어난 길이와 탄성력이 비례함을 그래프로 찾아요.</p>
+  <article class="tcard"><h3>교과서 탐구와 연결</h3>
+    <p class="def">교과서에서는 용수철을 늘이며 탄성력을 재고, 늘어난 길이와 탄성력이 비례함을 그래프로 찾아요.</p>
     <ul class="tb-list">
-      <li><b>천재</b> 160~163쪽 — 고무줄 위 컵 누르기, 디지털 용수철저울로 3 cm씩 늘이며 탄성력 측정</li>
-      <li><b>동아</b> 154~157쪽 — 고무 띠 당기기, 무선 힘 센서로 2~10 cm 늘이며 측정, ‘같은 원리 다른 탐구’로 추 걸기</li>
-      <li><b>비상</b> 166~169쪽 — 고무공 당기기, 힘 센서로 5~20 cm 늘이며 측정, ‘다르게 해 보기’로 추 걸기</li>
+      <li>고무줄·고무 띠를 늘이거나 누르며 탄성력의 방향과 크기 느껴 보기</li>
+      <li>디지털 용수철저울이나 힘 센서로 일정한 길이씩 늘이며 탄성력 재기</li>
+      <li>추를 하나씩 걸어 무게와 늘어난 길이의 관계 그래프 그리기</li>
     </ul>
-    <p class="link">이 실험실에서는 두 방법을 모두 해 볼 수 있어요. ‘힘 센서로 당기기’는 세 교과서의 본 탐구, ‘추 걸기’는 동아·비상의 ‘다르게 해 보기’예요. 멈춘 추의 무게가 곧 탄성력이라 두 방법의 그래프가 같아요.</p></article>`;
+    <p class="link">이 실험실에서는 ‘힘 센서로 당기기’와 ‘추 걸기’를 모두 해 볼 수 있어요. 멈춘 추의 무게가 곧 탄성력이라 두 방법의 그래프가 같아요.</p></article>`;
 }
 const HELP = {
   how: `<ol><li>오른쪽 아래 상자의 <b>추</b>를 누르거나 용수철 아래로 끌어 걸어요(＋ 단추로도 걸 수 있어요). 맨 아래 추를 누르면 내려요.</li>
@@ -1201,7 +1372,7 @@ const HELP = {
     <li>추를 걸면 용수철이 잠시 출렁이다 멈춰요(감쇠가 있는 진동). 멈춘 뒤에만 기록할 수 있어요.</li>
     <li>용수철 자체의 무게는 늘어나는 길이에 넣지 않았어요.</li>
     <li>힘 센서로 당길 때는 손으로 잡고 있어 출렁이지 않아요. 센서 값은 용수철 상수 × 늘어난 길이로 계산해 0.01 N까지 보여 줘요. 0.5 cm 단위로, 추 5개의 무게와 같은 힘(4.9 N)까지 늘일 수 있어요(A 10 cm, B 5 cm) — 탄성 한계를 넘지 않게 했어요.</li></ul>`,
-  source: '<p>2022 개정 중학교 과학 ‘힘의 작용’ — [9과05-02] 중력, 탄성력, 마찰력, 부력을 이해하고, 각 힘의 특징을 크기와 방향으로 설명할 수 있다(해설: 질량과 무게를 구별).</p><p>교과서: 천재교육(임성숙) 중학교 과학 1 160~163쪽, 동아출판 154~157쪽, 비상교육 166~169쪽의 탐구 ‘용수철의 탄성력 측정하기’를 따랐어요. 그래프는 교과서처럼 가로축을 용수철이 늘어난 길이, 세로축을 탄성력으로 그렸고, 생활 속 예(장대높이뛰기·활·트램펄린·자판·볼펜 등)도 교과서에서 골랐어요. 그림은 새로 그렸어요. 이전 판(React 한 화면)의 기능(추 걸기·단위·그래프)을 이어받아 다시 만들었어요.</p>',
+  source: '<p>2022 개정 중학교 과학 ‘힘의 작용’ — [9과05-02] 중력, 탄성력, 마찰력, 부력을 이해하고, 각 힘의 특징을 크기와 방향으로 설명할 수 있다(해설: 질량과 무게를 구별).</p><p>중학교 과학 교과서의 탐구 ‘용수철의 탄성력 측정하기’를 바탕으로 만들었어요. 그래프는 교과서처럼 가로축을 용수철이 늘어난 길이, 세로축을 탄성력으로 그렸고, 그림은 모두 새로 그렸어요. 이전 판(React 한 화면)의 기능(추 걸기·단위·그래프)을 이어받아 다시 만들었어요.</p>',
   wipe: '기록표, 그래프, 용수철·추 상태',
 };
 
